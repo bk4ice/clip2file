@@ -13,34 +13,31 @@
   <a href="https://github.com/bk4ice/clip2file/releases">Releases</a> •
   <a href="#install">安装</a> •
   <a href="#features">功能</a> •
-  <a href="PRIVACY.md">隐私政策</a>
+  <a href="https://bk4ice.github.io/clip2file/">隐私政策</a>
 </p>
 
 ---
 
 ## 简介
 
-Clip2File 是一款 Chrome 扩展，帮助用户一键把剪贴板或网页选区内容保存为正确的文件格式：
+Clip2File 把剪贴板或网页选区内容直接存成对的文件。复制代码按 `Alt + S`，或者右键选中内容，扩展会自动判断该存成什么格式：
 
-- 复制一段 Python / JavaScript / JSON / Markdown 等代码 → 按 `Alt + S` 或右键保存为 `.py` / `.js` / `.json` / `.md`
-- 复制多段代码 → 打包成项目 ZIP
-- 复制带图片的网页选区 → 保存为 `.html` 或 `.zip`
-- 复制纯文本 → 保存为 `.txt`
+- Python / JavaScript / JSON / Markdown 等代码 → `.py` / `.js` / `.json` / `.md`
+- 多段代码 → 项目 ZIP
+- 图文选区 → `.html` 或 `.zip`
+- 纯文本 → `.txt`
 
-所有处理都在本地完成，**不收集、不上传、不追踪**任何用户数据。
+所有内容只在本地浏览器处理，不上传到任何服务器。
 
 ## 功能
 
-- 🚀 **一键保存**：复制内容后按 `Alt + S`、点击扩展图标，或右键选中内容选择「Save as File with Clip2File」即可生成文件
-- 🧠 **智能识别**：自动检测 15+ 种编程语言与文件类型
-- 📦 **多文件/ZIP**：自动解析 Markdown 代码块，生成项目结构或 ZIP
-- 🖼️ **图片支持**：剪贴板图片、网页选区图片均可嵌入 HTML 或打包
-- ⚡ **快捷键**：
-  - `Alt + S` — 快速保存当前选区/剪贴板内容
-  - `Alt + Y` — 打开扩展面板
-- 🖱️ **右键菜单**：网页选区文字/图片 → 右键 → 另存为文件
-- 🎨 **Apple 风格界面**：毛玻璃 Popup + macOS System Settings 风格选项页
-- 🌓 **深色模式**：自动跟随系统偏好
+- 🚀 按 `Alt + S`、点扩展图标，或右键 → 直接生成文件
+- 🧠 自动识别 15+ 种语言和文件类型
+- 📦 多段代码自动打包成 ZIP
+- 🖼️ 支持剪贴板图片、网页图片、图文混排
+- ⚡ `Alt + S` 快速保存，`Alt + Y` 打开面板
+- 🖱️ 右键菜单：网页选区文字 / 图片 → 另存为文件
+- 🎨 简洁界面，支持浅色 / 深色模式
 
 ## 安装
 
@@ -91,14 +88,12 @@ clip2file/
 
 ## 隐私
 
-Clip2File 在本地处理所有内容（剪贴板文本、网页选区、图片），不会将任何数据发送到开发者服务器或第三方。
-
-详见 [PRIVACY.md](PRIVACY.md)。
-
-## 贡献
-
-欢迎 Issue 和 Pull Request！
+处理全在本地，不上传。详见 [隐私政策](https://bk4ice.github.io/clip2file/)。
 
 ## 协议
 
-[MIT License](LICENSE)
+[MIT](LICENSE)
+
+## 贡献
+
+欢迎提 Issue 和 PR。
