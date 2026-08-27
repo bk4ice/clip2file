@@ -11,6 +11,7 @@ const openShortcutsBtn = document.getElementById('open-shortcuts-btn') as HTMLBu
 const versionBadge = document.getElementById('version-badge') as HTMLSpanElement;
 const aboutVersion = document.getElementById('about-version') as HTMLSpanElement;
 const privacyLink = document.getElementById('privacy-link-row') as HTMLDivElement;
+const PRIVACY_URL = 'https://bk4ice.github.io/clip2file/';
 
 /** --- Sidebar navigation (single-page section switcher) --- */
 const navItems = document.querySelectorAll<HTMLButtonElement>('.nav-item');
@@ -77,12 +78,22 @@ function loadMeta(): void {
 }
 
 function bindPrivacyLink(): void {
-  privacyLink?.addEventListener('click', () => activateSection('section-privacy'));
+  privacyLink?.addEventListener('click', (e) => {
+    if (e.shiftKey || e.ctrlKey || e.metaKey) {
+      chrome.tabs?.create({ url: PRIVACY_URL, active: true });
+    } else {
+      activateSection('section-privacy');
+    }
+  });
   privacyLink?.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       activateSection('section-privacy');
     }
+  });
+  privacyLink?.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    chrome.tabs?.create({ url: PRIVACY_URL, active: true });
   });
 }
 
