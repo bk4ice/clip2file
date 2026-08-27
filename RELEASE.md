@@ -72,45 +72,47 @@ zip -r ../clip2file-v1.0.0.zip .
 
 **English:**
 
-> Clip2File — save any clipboard or page selection as the right file, instantly.
+> **Clip2File — save any clipboard or page selection as the right file, instantly.**
 >
-> Copy a snippet from ChatGPT, Claude, Cursor or any page. Press `Alt + S` or right-click the selection. Clip2File figures out the format, filename, and extension, then downloads it.
+> Tired of copying code from AI chats and then manually creating files? Just press `Alt + S` or right-click the selection. Clip2File detects the content type, picks the correct filename and extension, and downloads it for you.
 >
-> What it handles:
-> - Python, JavaScript, JSON, Markdown, etc. → `.py`, `.js`, `.json`, `.md`
-> - Multi-code-block replies → a project ZIP with correct paths
-> - Text + images from a page → a self-contained `.html` or `.zip`
-> - Plain clipboard text → `.txt`
+> **What you can do:**
+> - Copy a Python / JavaScript / JSON / Markdown snippet → save as `main.py` / `script.js` / `data.json` / `README.md`
+> - Copy a multi-code-block AI reply → export as a project ZIP with proper paths
+> - Select text + images on a web page → save as a self-contained `.html` 或 `.zip`
+> - Right-click selected text or image → click **Save as File with Clip2File**
+> - Press `Alt + S` anywhere to quick-save clipboard or selection
 >
-> Key points:
-> - One shortcut or one right-click to save
-> - Detects 15+ file types and languages
-> - Handles images from clipboard and web pages
-> - Everything stays local; no upload, no tracking, no ads
-> - Clean UI with light and dark mode
+> **Why it stands out:**
+> - ⚡ **Lightning fast**: one key or one right-click to save
+> - 🧠 **Smart detection**: 15+ file types and languages recognized automatically
+> - 🖼️ **Image-friendly**: clipboard images, cross-domain page images, and mixed text+image selections all supported
+> - 🔒 **Local & private**: no data ever leaves your browser; no tracking, no ads, no telemetry
+> - 🎨 **Native feel**: clean Apple-style UI with light/dark mode
 >
-> Copy → save → done.
+> No more dragging text to the desktop and renaming files by hand. Copy → save → done.
 
 **中文：**
 
-> Clip2File — 把剪贴板或网页选区一键存成对的文件。
+> **Clip2File — 把剪贴板或网页选区内容一键保存为正确格式的文件。**
 >
-> 从 ChatGPT、Claude、Cursor 或任意页面复制一段内容，按 `Alt + S`，或右键选中文本/图片，Clip2File 自动判断格式、文件名和扩展名，直接下载到本地。
+> 从 ChatGPT、Claude、Cursor 等 AI 对话中复制代码，还要手动创建文件、改后缀？按一下 `Alt + S`，或右键选中内容，Clip2File 自动识别内容类型、推断最合适的文件名和扩展名，并直接下载到本地。
 >
-> 支持的保存场景：
-> - Python、JavaScript、JSON、Markdown 等代码 → `.py`、`.js`、`.json`、`.md`
-> - 多段代码的 AI 回复 → 按路径打包成 ZIP
-> - 网页图文选区 → 自包含 `.html` 或 `.zip`
-> - 普通剪贴板文本 → `.txt`
+> **你可以用它做这些：**
+> - 复制 Python / JavaScript / JSON / Markdown 等代码 → 保存为 `main.py` / `script.js` / `data.json` / `README.md`
+> - 复制包含多个代码块的 AI 回复 → 自动解析并导出为项目 ZIP
+> - 选中网页中的文字 + 图片 → 保存为自包含的 `.html` 或 `.zip`
+> - 在网页中右键选中的文字或图片 → 点击「Save as File with Clip2File」
+> - 随时随地按 `Alt + S` 快速保存剪贴板或选区
 >
-> 特点：
-> - 一个快捷键或一次右键即可保存
-> - 自动识别 15+ 种文件类型
-> - 支持剪贴板图片与网页图片
-> - 全部本地处理，不上传、不追踪、无广告
-> - 支持浅色/深色模式
+> **核心优势：**
+> - ⚡ **极速**：一个快捷键或一次右键即可保存
+> - 🧠 **智能**：自动识别 15+ 种文件类型与编程语言
+> - 🖼️ **支持图片**：剪贴板图片、跨域图片、图文混合选区都能处理
+> - 🔒 **本地且私密**：不上传、不追踪、无广告、无遥测
+> - 🎨 **原生体验**：Apple 风格界面，支持浅色/深色模式
 >
-> 复制 → 保存 → 完成。
+> 告别手动拖拽、重命名文件。复制 → 保存 → 完成。
 
 ### 4.3 单一用途
 
