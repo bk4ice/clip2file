@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clip2File Settings</title>
+  <link rel="stylesheet" href="./options.css" />
+</head>
+<body>
+  <div class="window">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="sidebar-brand">
+        <img src="../icons/icon48.png" alt="" class="sidebar-mark" />
+        <div class="sidebar-brand-text">
+          <span class="sidebar-name">Clip2File</span>
+          <span class="sidebar-sub">Settings</span>
+        </div>
+      </div>
+
+      <div class="sidebar-nav" id="sidebar-nav">
+        <button class="nav-item is-active" data-target="section-general">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M8.6 2.4c.2-.7.9-1.2 1.7-1.2s1.5.5 1.7 1.2l.2.7c.6.2 1.2.5 1.7.9l.7-.3c.7-.3 1.5-.1 2 .5.4.6.5 1.4.1 2l-.4.6c.3.6.5 1.2.6 1.8l.7.2c.7.2 1.2.9 1.2 1.7s-.5 1.5-1.2 1.7l-.7.2c-.1.6-.3 1.2-.6 1.8l.4.6c.4.6.3 1.4-.1 2-.5.6-1.3.8-2 .5l-.7-.3c-.5.4-1.1.7-1.7.9l-.2.7c-.2.7-.9 1.2-1.7 1.2s-1.5-.5-1.7-1.2l-.2-.7c-.6-.2-1.2-.5-1.7-.9l-.7.3c-.7.3-1.5.1-2-.5-.4-.6-.5-1.4-.1-2l.4-.6a6.9 6.9 0 0 1-.6-1.8l-.7-.2C1.5 11.5 1 10.8 1 10s.5-1.5 1.2-1.7l.7-.2c.1-.6.3-1.2.6-1.8l-.4-.6c-.4-.6-.3-1.4.1-2 .5-.6 1.3-.8 2-.5l.7.3c.5-.4 1.1-.7 1.7-.9l.2-.7Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><circle cx="10" cy="10" r="2.6" stroke="currentColor" stroke-width="1.4"/></svg>
+          <span>General</span>
+        </button>
+        <button class="nav-item" data-target="section-shortcuts">
+          <svg viewBox="0 0 20 20" fill="none"><rect x="2" y="5" width="16" height="10" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M5.5 8.5h1M8.5 8.5h1M11.5 8.5h1M14.5 8.5h1M5.5 11.5h9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          <span>Shortcuts</span>
+        </button>
+        <button class="nav-item" data-target="section-formats">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M6.5 2.5h5l3 3v10a1.2 1.2 0 0 1-1.2 1.2H6.5A1.2 1.2 0 0 1 5.3 15.5v-11A1.2 1.2 0 0 1 6.5 2.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M8 8.5h4M8 11h4M8 6h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          <span>Formats</span>
+        </button>
+        <button class="nav-item" data-target="section-privacy">
+          <svg viewBox="0 0 20 20" fill="none"><rect x="4.5" y="2" width="11" height="16" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M7 6.5h6M7 9.5h6M7 12.5h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          <span>Privacy</span>
+        </button>
+        <button class="nav-item" data-target="section-about">
+          <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.4"/><path d="M10 9v4.2M10 6.6h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <span>About</span>
+        </button>
+      </div>
+
+      <div class="sidebar-footer">
+        <span class="badge-local">
+          <svg viewBox="0 0 20 20" fill="none"><rect x="4.5" y="9" width="11" height="7.5" rx="1.6" stroke="currentColor" stroke-width="1.3"/><path d="M6.8 9V6.5a3.2 3.2 0 0 1 6.4 0V9" stroke="currentColor" stroke-width="1.3"/></svg>
+          On-device only
+        </span>
+      </div>
+    </nav>
+
+    <!-- Content -->
+    <main class="content">
+      <!-- General -->
+      <section class="content-section is-active" id="section-general">
+        <header class="section-header">
+          <h1>General</h1>
+          <p>Defaults and behavior for saving clipboard content.</p>
+        </header>
+
+        <div class="group">
+          <div class="group-title">Naming</div>
+          <div class="group-body">
+            <div class="row row-stack">
+              <div class="row-text">
+                <span class="row-label">Default filename for plain text</span>
+                <span class="row-hint">Used when Clip2File can't infer a title from the content</span>
+              </div>
+              <input type="text" id="default-text" value="untitled" placeholder="untitled" class="text-field" />
+            </div>
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="group-title">Behavior</div>
+          <div class="group-body">
+            <div class="row">
+              <div class="row-icon">
+                <svg viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="4" stroke="currentColor" stroke-width="1.4"/><path d="M10 6.5v4l2.6 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="row-text">
+                <span class="row-label">Shortcut badge feedback</span>
+                <span class="row-hint">Flash the toolbar icon green / red after Alt+S</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="badge-toggle" checked />
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="row-divider"></div>
+            <div class="row">
+              <div class="row-icon">
+                <svg viewBox="0 0 20 20" fill="none"><rect x="3" y="4" width="14" height="12" rx="2.4" stroke="currentColor" stroke-width="1.4"/><path d="M7 8.3 9.2 10.5 13.5 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="row-text">
+                <span class="row-label">Auto-close after saving</span>
+                <span class="row-hint">Close the popup shortly after a successful save</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="autoclose-toggle" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-actions">
+          <button id="save-settings" class="btn btn-primary">Save Changes</button>
+          <button id="reset-settings" class="btn btn-ghost">Restore Defaults</button>
+        </div>
+
+        <div id="status" class="inline-status hidden"></div>
+      </section>
+
+      <!-- Shortcuts -->
+      <section class="content-section" id="section-shortcuts">
+        <header class="section-header">
+          <h1>Shortcuts</h1>
+          <p>Keyboard shortcuts registered for Clip2File.</p>
+        </header>
+
+        <div class="group">
+          <div class="group-title">Registered keys</div>
+          <div class="group-body" id="shortcuts-list"></div>
+        </div>
+
+        <div class="section-actions">
+          <button id="open-shortcuts-btn" class="btn btn-secondary">Customize in Chrome…</button>
+        </div>
+      </section>
+
+      <!-- Formats -->
+      <section class="content-section" id="section-formats">
+        <header class="section-header">
+          <h1>Supported Formats</h1>
+          <p>Clip2File automatically detects these content types.</p>
+        </header>
+
+        <div class="group">
+          <div class="group-body group-body-pad">
+            <div class="chip-list">
+              <span class="chip">Python</span>
+              <span class="chip">JavaScript</span>
+              <span class="chip">TypeScript</span>
+              <span class="chip">HTML</span>
+              <span class="chip">CSS</span>
+              <span class="chip">JSON</span>
+              <span class="chip">YAML</span>
+              <span class="chip">SQL</span>
+              <span class="chip">Shell</span>
+              <span class="chip">Dockerfile</span>
+              <span class="chip">C++</span>
+              <span class="chip">Java</span>
+              <span class="chip">Go</span>
+              <span class="chip">Rust</span>
+              <span class="chip">Markdown</span>
+              <span class="chip">Images</span>
+              <span class="chip">Multi-file / ZIP</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- About -->
+      <section class="content-section" id="section-about">
+        <header class="section-header">
+          <h1>About</h1>
+          <p>Version, privacy, and data handling.</p>
+        </header>
+
+        <div class="about-hero">
+          <img src="../icons/icon128.png" alt="" class="about-mark" />
+          <div class="about-hero-text">
+            <span class="about-name">Clip2File</span>
+            <span id="version-badge" class="version-badge">Version 1.0.0</span>
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="group-body">
+            <div class="row">
+              <div class="row-text"><span class="row-label">Version</span></div>
+              <span id="about-version" class="row-value">1.0.0</span>
+            </div>
+            <div class="row-divider"></div>
+            <div class="row" id="privacy-link-row" role="button" tabindex="0" style="cursor: pointer;">
+              <div class="row-text"><span class="row-label">Privacy policy</span></div>
+              <span class="row-link">View policy →</span>
+            </div>
+            <div class="row-divider"></div>
+            <div class="row">
+              <div class="row-text"><span class="row-label">Data handling</span></div>
+              <span class="badge-local badge-local-inline">
+                <svg viewBox="0 0 20 20" fill="none"><rect x="4.5" y="9" width="11" height="7.5" rx="1.6" stroke="currentColor" stroke-width="1.3"/><path d="M6.8 9V6.5a3.2 3.2 0 0 1 6.4 0V9" stroke="currentColor" stroke-width="1.3"/></svg>
+                Processed locally, never uploaded
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <p class="page-footer">Made for people who copy things from AI chats.</p>
+      </section>
+
+      <!-- Privacy -->
+      <section class="content-section" id="section-privacy">
+        <header class="section-header">
+          <h1>Privacy</h1>
+          <p>How Clip2File handles your data.</p>
+        </header>
+
+        <div class="privacy-card" lang="zh-CN">
+          <span class="privacy-lang">中文</span>
+          <h2>Clip2File 隐私政策</h2>
+          <p class="privacy-updated">最后更新日期：2025-01-01</p>
+          <p>Clip2File（以下简称“本扩展”）是一款 Chrome 浏览器扩展，帮助用户将剪贴板内容或网页选区内容一键保存为格式正确的本地文件（文本、代码、Markdown、HTML 或 ZIP）。</p>
+          <p><strong>本扩展不收集、不存储、不传输任何用户数据到开发者服务器或任何第三方服务器。</strong>所有内容处理均在用户本地浏览器内完成。</p>
+
+          <h3>我们如何使用权限</h3>
+          <table class="privacy-table">
+            <tr><th>权限</th><th>用途</th><th>数据流向</th></tr>
+            <tr><td><code>storage</code></td><td>保存用户在“设置”页面配置的偏好（如默认文件名、开关选项）</td><td>仅存储在用户本地浏览器，不上传</td></tr>
+            <tr><td><code>contextMenus</code></td><td>提供右键菜单“另存为文件”功能</td><td>不涉及数据传输</td></tr>
+            <tr><td><code>downloads</code></td><td>将生成的文件保存到用户本地下载目录</td><td>文件直接写入用户本机磁盘</td></tr>
+            <tr><td><code>clipboardRead</code></td><td>读取剪贴板文本/图片，用于检测类型并生成文件</td><td>仅在本地内存中处理，不上传</td></tr>
+            <tr><td><code>activeTab</code> / <code>scripting</code></td><td>读取当前网页选中的文字或图片，用于生成文件</td><td>仅在本地处理，不发送到任何外部服务器</td></tr>
+            <tr><td><code>host_permissions</code>（<code>&lt;all_urls&gt;</code>）</td><td>保存“包含图片的选区”时，需向图片所在域名请求以下载该图片（图片可能来自任意网站）</td><td>仅从图片原始 URL 下载数据到本地文件，不经过开发者服务器中转</td></tr>
+          </table>
+
+          <h3>我们不会做什么</h3>
+          <ul class="privacy-list">
+            <li>不会将剪贴板内容、网页内容、图片或文件名发送到任何远程服务器</li>
+            <li>不会追踪用户浏览历史或行为</li>
+            <li>不会展示广告或植入第三方追踪代码</li>
+            <li>不会出售或提供数据给任何第三方</li>
+            <li>不包含任何遥测（telemetry）或分析（analytics）代码</li>
+          </ul>
+
+          <h3>数据存储</h3>
+          <p>扩展仅使用 <code>chrome.storage.local</code> 存储用户偏好设置（默认文件名、界面开关），数据永久保留在用户本机，随扩展卸载而清除，开发者无法访问。</p>
+
+          <h3>联系方式</h3>
+          <p>如对本隐私政策有任何疑问，请通过以下方式联系开发者：<em>（请在此填写你的邮箱或 GitHub 地址）</em></p>
+        </div>
+
+        <hr class="privacy-divider" />
+
+        <div class="privacy-card" lang="en">
+          <span class="privacy-lang">ENGLISH</span>
+          <h2>Clip2File Privacy Policy</h2>
+          <p class="privacy-updated">Last updated: 2025-01-01</p>
+          <p>Clip2File ("the Extension") is a Chrome browser extension that helps users save clipboard content or web page selections as properly formatted local files (text, code, Markdown, HTML, or ZIP).</p>
+          <p><strong>The Extension does not collect, store, or transmit any user data to the developer's servers or any third party.</strong> All content processing happens entirely within the user's local browser.</p>
+
+          <h3>How We Use Permissions</h3>
+          <table class="privacy-table">
+            <tr><th>Permission</th><th>Purpose</th><th>Data Flow</th></tr>
+            <tr><td><code>storage</code></td><td>Save user preferences from the Options page (default filename, toggles)</td><td>Stored locally only, never uploaded</td></tr>
+            <tr><td><code>contextMenus</code></td><td>Provide the right-click "Save as File" menu item</td><td>No data transmission</td></tr>
+            <tr><td><code>downloads</code></td><td>Save generated files to the user's local downloads folder</td><td>Files written directly to the user's disk</td></tr>
+            <tr><td><code>clipboardRead</code></td><td>Read clipboard text/images to detect content type and generate a file</td><td>Processed only in local memory, never uploaded</td></tr>
+            <tr><td><code>activeTab</code> / <code>scripting</code></td><td>Read selected text/images on the current page to generate a file</td><td>Processed locally only</td></tr>
+            <tr><td><code>host_permissions</code> (<code>&lt;all_urls&gt;</code>)</td><td>Fetch image bytes from their hosting domain when saving a selection containing images (images can be hosted on any site)</td><td>Downloaded directly from the original URL into the generated file; no developer server involved</td></tr>
+          </table>
+
+          <h3>What We Do Not Do</h3>
+          <ul class="privacy-list">
+            <li>We do not send clipboard content, page content, images, or filenames to any remote server</li>
+            <li>We do not track browsing history or user behavior</li>
+            <li>We do not display ads or embed third-party tracking code</li>
+            <li>We do not sell or share any data with third parties</li>
+            <li>The Extension contains no telemetry or analytics code</li>
+          </ul>
+
+          <h3>Data Storage</h3>
+          <p>The Extension uses <code>chrome.storage.local</code> to store user preferences (default filename, UI toggles). This data stays on the user's device and is cleared on uninstall.</p>
+
+          <h3>Contact</h3>
+          <p>Questions about this policy can be sent to: <em>(insert your email or GitHub URL here)</em></p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="./options.ts"></script>
+</body>
+</html>

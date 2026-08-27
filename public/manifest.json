@@ -1,0 +1,52 @@
+{
+  "manifest_version": 3,
+  "name": "Clip2File",
+  "version": "1.0.0",
+  "description": "Turn clipboard content into the right file, instantly.",
+  "permissions": [
+    "storage",
+    "contextMenus",
+    "downloads",
+    "scripting",
+    "activeTab",
+    "clipboardRead"
+  ],
+  "optional_permissions": [],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "action": {
+    "default_popup": "popup/index.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "options_page": "options/index.html",
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "commands": {
+    "quick-save": {
+      "suggested_key": {
+        "default": "Alt+S",
+        "mac": "Alt+S"
+      },
+      "description": "Quick save current selection (or clipboard) as a file"
+    },
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Alt+Y",
+        "mac": "Alt+Y"
+      },
+      "description": "Open Clip2File popup"
+    }
+  }
+}
