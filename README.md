@@ -20,12 +20,12 @@
 
 ## 简介
 
-从 ChatGPT、Claude、Cursor 这些 AI 对话里复制代码，还要手动建文件、改后缀？按一下 `Alt + S`，或者右键选中内容，Clip2File 自动识别格式、给出合适的文件名，直接存到本地。
+在网页里看到一段代码、JSON 配置或 Markdown 笔记，复制之后还要手动建文件、改后缀？按一下 `Alt + S`，或者右键选中内容，Clip2File 自动识别格式、给出合适的文件名，直接存到本地。
 
 **你可以用它做这些：**
 
 - 复制 Python / JavaScript / JSON / Markdown 等代码 → 保存为 `main.py` / `script.js` / `data.json` / `README.md`
-- 复制包含多个代码块的 AI 回复 → 自动解析并导出为项目 ZIP
+- 复制包含多个代码块的网页内容 → 自动解析并导出为项目 ZIP
 - 选中网页中的文字 + 图片 → 保存为自包含的 `.html` 或 `.zip`
 - 在网页中右键选中的文字或图片 → 点击「Save as File with Clip2File」
 - 随时随地按 `Alt + S` 快速保存剪贴板或选区

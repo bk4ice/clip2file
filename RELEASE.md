@@ -74,11 +74,11 @@ zip -r ../clip2file-v1.0.0.zip .
 
 > **Clip2File — save any clipboard or page selection as the right file, instantly.**
 >
-> Tired of copying code from AI chats and then manually creating files? Just press `Alt + S` or right-click the selection. Clip2File detects the content type, picks the correct filename and extension, and downloads it for you.
+> Tired of copying code from web pages and then manually creating files? Just press `Alt + S` or right-click the selection. Clip2File detects the content type, picks the correct filename and extension, and downloads it for you.
 >
 > **What you can do:**
-> - Copy a Python / JavaScript / JSON / Markdown snippet → save as `main.py` / `script.js` / `data.json` / `README.md`
-> - Copy a multi-code-block AI reply → export as a project ZIP with proper paths
+> - Copy a Python / JavaScript / JSON / Markdown snippet from any web page → save as `main.py` / `script.js` / `data.json` / `README.md`
+> - Copy a multi-code-block page → export as a project ZIP with proper paths
 > - Select text + images on a web page → save as a self-contained `.html` 或 `.zip`
 > - Right-click selected text or image → click **Save as File with Clip2File**
 > - Press `Alt + S` anywhere to quick-save clipboard or selection
@@ -96,11 +96,11 @@ zip -r ../clip2file-v1.0.0.zip .
 
 > **Clip2File — 把剪贴板或网页选区内容一键保存为正确格式的文件。**
 >
-> 从 ChatGPT、Claude、Cursor 等 AI 对话中复制代码，还要手动创建文件、改后缀？按一下 `Alt + S`，或右键选中内容，Clip2File 自动识别内容类型、推断最合适的文件名和扩展名，并直接下载到本地。
+> 在网页里看到代码片段、JSON 配置或 Markdown 笔记，复制之后还要手动创建文件、改后缀？按一下 `Alt + S`，或右键选中内容，Clip2File 自动识别内容类型、推断最合适的文件名和扩展名，并直接下载到本地。
 >
 > **你可以用它做这些：**
-> - 复制 Python / JavaScript / JSON / Markdown 等代码 → 保存为 `main.py` / `script.js` / `data.json` / `README.md`
-> - 复制包含多个代码块的 AI 回复 → 自动解析并导出为项目 ZIP
+> - 复制网页中的 Python / JavaScript / JSON / Markdown 等代码 → 保存为 `main.py` / `script.js` / `data.json` / `README.md`
+> - 复制包含多个代码块的网页内容 → 自动解析并导出为项目 ZIP
 > - 选中网页中的文字 + 图片 → 保存为自包含的 `.html` 或 `.zip`
 > - 在网页中右键选中的文字或图片 → 点击「Save as File with Clip2File」
 > - 随时随地按 `Alt + S` 快速保存剪贴板或选区
