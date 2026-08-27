@@ -53,9 +53,10 @@ zip -r ../clip2file-v1.0.0.zip .
 
 ### 3.3 截图建议
 
-1. Popup 检测 Python 代码，文件名 `main.py`
-2. 网页选区右键 → Save as File with Clip2File
-3. Options 设置页 General / Privacy
+1. Popup 保存网页文本为 `.txt`
+2. Popup 检测 Python 代码，文件名 `main.py`
+3. 网页选区右键 → Save as File with Clip2File
+4. Options 设置页 General / Privacy
 
 ---
 
@@ -74,18 +75,19 @@ zip -r ../clip2file-v1.0.0.zip .
 
 > **Clip2File — save any clipboard or page selection as the right file, instantly.**
 >
-> Tired of copying code from web pages and then manually creating files? Just press `Alt + S` or right-click the selection. Clip2File detects the content type, picks the correct filename and extension, and downloads it for you.
+> Tired of copying text, code, or images from web pages and then manually creating files? Just press `Alt + S` or right-click the selection. Clip2File detects the content type, picks the correct filename and extension, and downloads it for you.
 >
 > **What you can do:**
-> - Copy a Python / JavaScript / JSON / Markdown snippet from any web page → save as `main.py` / `script.js` / `data.json` / `README.md`
+> - Copy text, notes, or article snippets from a web page → save as `.txt` or `.md`
+> - Copy images or text + image selections → save as a self-contained `.html` or `.zip`
+> - Copy Python / JavaScript / JSON / Markdown code → save as `main.py` / `script.js` / `data.json` / `README.md`
 > - Copy a multi-code-block page → export as a project ZIP with proper paths
-> - Select text + images on a web page → save as a self-contained `.html` 或 `.zip`
 > - Right-click selected text or image → click **Save as File with Clip2File**
 > - Press `Alt + S` anywhere to quick-save clipboard or selection
 >
 > **Why it stands out:**
 > - ⚡ **Lightning fast**: one key or one right-click to save
-> - 🧠 **Smart detection**: 15+ file types and languages recognized automatically
+> - 🧠 **Smart detection**: 15+ file types and content types recognized automatically
 > - 🖼️ **Image-friendly**: clipboard images, cross-domain page images, and mixed text+image selections all supported
 > - 🔒 **Local & private**: no data ever leaves your browser; no tracking, no ads, no telemetry
 > - 🎨 **Native feel**: clean Apple-style UI with light/dark mode
@@ -96,21 +98,22 @@ zip -r ../clip2file-v1.0.0.zip .
 
 > **Clip2File — 把剪贴板或网页选区内容一键保存为正确格式的文件。**
 >
-> 在网页里看到代码片段、JSON 配置或 Markdown 笔记，复制之后还要手动创建文件、改后缀？按一下 `Alt + S`，或右键选中内容，Clip2File 自动识别内容类型、推断最合适的文件名和扩展名，并直接下载到本地。
+> 在网页里看到文字、代码、图片或表格，复制之后还要手动创建文件、整理格式？按一下 `Alt + S`，或右键选中内容，Clip2File 自动识别内容类型、推断最合适的文件名和扩展名，并直接下载到本地。
 >
 > **你可以用它做这些：**
+> - 复制网页中的文字、笔记、文章段落 → 保存为 `.txt` 或 `.md`
+> - 复制网页里的图片或图文选区 → 保存为自包含的 `.html` 或 `.zip`
 > - 复制网页中的 Python / JavaScript / JSON / Markdown 等代码 → 保存为 `main.py` / `script.js` / `data.json` / `README.md`
 > - 复制包含多个代码块的网页内容 → 自动解析并导出为项目 ZIP
-> - 选中网页中的文字 + 图片 → 保存为自包含的 `.html` 或 `.zip`
 > - 在网页中右键选中的文字或图片 → 点击「Save as File with Clip2File」
 > - 随时随地按 `Alt + S` 快速保存剪贴板或选区
 >
 > **核心优势：**
 > - ⚡ **极速**：一个快捷键或一次右键即可保存
-> - 🧠 **智能**：自动识别 15+ 种文件类型与编程语言
+> - 🧠 **智能**：自动识别文本、图片、代码等 15+ 种内容类型
 > - 🖼️ **支持图片**：剪贴板图片、跨域图片、图文混合选区都能处理
 > - 🔒 **本地且私密**：不上传、不追踪、无广告、无遥测
-> - 🎨 **原生体验**：Apple 风格界面，支持浅色/深色模式
+> - 🎨 **原生体验**：简洁界面，支持浅色 / 深色模式
 >
 > 告别手动拖拽、重命名文件。复制 → 保存 → 完成。
 
