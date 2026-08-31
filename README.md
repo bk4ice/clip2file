@@ -53,9 +53,9 @@
 
 ## 安装
 
-### 方式一：Chrome Web Store（上架后）
+### 方式一：Chrome Web Store（推荐方式）
 
-访问 [Chrome Web Store 页面](#)（即将上架），点击“添加至 Chrome”。
+访问 [Chrome Web Store 页面](https://chromewebstore.google.com/detail/clip2file/gfmpdogdgjfbcnhonaljiohncogoiooo)，点击“添加至 Chrome”。
 
 ### 方式二：本地加载（开发者模式）
 
