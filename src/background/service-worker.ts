@@ -5,15 +5,38 @@ import { sanitizeFilename } from '../core/sanitizer';
 import { buildZip } from '../core/zip-builder';
 import { buildMarkdown } from '../core/markdown-builder';
 import { buildHtml } from '../core/html-builder';
+import { decideFormat, type SaveMode } from '../core/save-format';
+import { t } from '../utils/i18n';
 import type { ParsedFile } from '../core/types';
 
-chrome.runtime.onInstalled.addListener(() => {
-  chrome.contextMenus.create({
-    id: 'clip2file-save',
-    title: 'Save as File with Clip2File',
-    contexts: ['selection']
+const MENU_SMART_SAVE = 'clip2file-save';
+const MENU_FORMAT = 'clip2file-format';
+const MENU_TEXT = 'clip2file-format-text';
+const MENU_MARKDOWN = 'clip2file-format-markdown';
+const MENU_HTML = 'clip2file-format-html';
+const MENU_ZIP = 'clip2file-format-zip';
+
+function createContextMenus(): void {
+  chrome.contextMenus.removeAll(() => {
+    chrome.contextMenus.create({
+      id: MENU_SMART_SAVE,
+      title: t('menuSmartSave'),
+      contexts: ['selection'],
+    });
+    chrome.contextMenus.create({
+      id: MENU_FORMAT,
+      title: t('menuSaveAs'),
+      contexts: ['selection'],
+    });
+    chrome.contextMenus.create({ id: MENU_TEXT, parentId: MENU_FORMAT, title: t('menuPlainText'), contexts: ['selection'] });
+    chrome.contextMenus.create({ id: MENU_MARKDOWN, parentId: MENU_FORMAT, title: t('menuMarkdown'), contexts: ['selection'] });
+    chrome.contextMenus.create({ id: MENU_HTML, parentId: MENU_FORMAT, title: t('menuHtml'), contexts: ['selection'] });
+    chrome.contextMenus.create({ id: MENU_ZIP, parentId: MENU_FORMAT, title: t('menuZip'), contexts: ['selection'] });
   });
-});
+}
+
+chrome.runtime.onInstalled.addListener(createContextMenus);
+chrome.runtime.onStartup.addListener(createContextMenus);
 
 /** Result of extracting content from a page selection.
  *  Images are returned as URL references (not base64) so the service
@@ -202,7 +225,7 @@ function fetchImageViaCanvas(url: string): Promise<string | null> {
  *  Extracts selection content (text + image URLs) from the active tab,
  *  downloads images in the service worker (bypassing page CORS), then
  *  downloads the result as the appropriate file type. */
-async function saveSelectionFromTab(tabId: number): Promise<void> {
+async function saveSelectionFromTab(tabId: number, mode: SaveMode = 'auto'): Promise<void> {
   const results = await chrome.scripting.executeScript({
     target: { tabId },
     func: extractSelectionContent,
@@ -264,6 +287,76 @@ async function saveSelectionFromTab(tabId: number): Promise<void> {
   }
 
   const result = detect(selectedText);
+
+  if (mode !== 'auto') {
+    const decision = decideFormat(mode, {
+      hasText: Boolean(selectedText.trim()),
+      imageCount: imageFiles.length,
+      isProject: result.type === 'project',
+      suggestedFilename: result.suggestedFilename,
+    });
+
+    if (!decision.allowed) {
+      console.warn(`[Clip2File] format rejected: ${decision.reason}`);
+      throw new Error(`format rejected: ${decision.reason}`);
+    }
+
+    if (mode === 'zip') {
+      const files: ParsedFile[] = [];
+      if (selectedText.trim()) {
+        if (result.type === 'project') {
+          files.push(...parseProject(selectedText).files);
+        } else {
+          files.push({
+            path: sanitizeFilename(result.suggestedFilename),
+            language: result.language || 'text',
+            content: selectedText,
+            nameSource: 'inferred',
+          });
+        }
+      }
+      files.push(...imageFiles);
+      const { blob, count } = await buildZip(files);
+      if (count === 0) {
+        console.warn('[Clip2File] no safe files to zip');
+        throw new Error('no safe files to zip');
+      }
+      const base64 = await blobToBase64(blob);
+      await chrome.scripting.executeScript({
+        target: { tabId },
+        func: downloadBase64Blob,
+        args: [base64, decision.filename, 'application/zip'],
+      });
+      return;
+    }
+
+    if (mode === 'markdown') {
+      const markdown = await buildMarkdown(selectedText, imageFiles);
+      await chrome.scripting.executeScript({
+        target: { tabId },
+        func: downloadTextInPage,
+        args: [markdown, decision.filename, 'text/markdown;charset=utf-8'],
+      });
+      return;
+    }
+
+    if (mode === 'html') {
+      const html = await buildHtml(selectedText, imageFiles);
+      await chrome.scripting.executeScript({
+        target: { tabId },
+        func: downloadTextInPage,
+        args: [html, decision.filename, 'text/html;charset=utf-8'],
+      });
+      return;
+    }
+
+    await chrome.scripting.executeScript({
+      target: { tabId },
+      func: downloadTextInPage,
+      args: [selectedText, decision.filename, 'text/plain;charset=utf-8'],
+    });
+    return;
+  }
 
   // --- Multi-file project (text only, no images in ZIP) ---
   if (result.type === 'project' && imageFiles.length === 0) {
@@ -368,12 +461,23 @@ async function hasSelection(tabId: number): Promise<boolean> {
   return results[0]?.result === true;
 }
 
+const MENU_MODES: Record<string, SaveMode> = {
+  [MENU_SMART_SAVE]: 'auto',
+  [MENU_TEXT]: 'text',
+  [MENU_MARKDOWN]: 'markdown',
+  [MENU_HTML]: 'html',
+  [MENU_ZIP]: 'zip',
+};
+
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
-  if (info.menuItemId !== 'clip2file-save' || !tab?.id) return;
+  const mode = MENU_MODES[String(info.menuItemId)];
+  if (!mode || !tab?.id) return;
   try {
-    await saveSelectionFromTab(tab.id);
+    await saveSelectionFromTab(tab.id, mode);
+    await flashBadge('success');
   } catch (err) {
     console.error('[Clip2File] failed:', err);
+    await flashBadge('error');
   }
 });
 

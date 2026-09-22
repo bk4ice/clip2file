@@ -7,10 +7,10 @@
 | 项目     | 内容                               |
 | -------- | ---------------------------------- |
 | 名称     | Clip2File                          |
-| 版本     | 1.0.0                              |
+| 版本     | 1.1.0                              |
 | Manifest | V3                                 |
 | 技术栈   | TypeScript + Vite + Vitest + JSZip |
-| 测试     | 70 个用例，8 个测试文件，全部通过  |
+| 测试     | 81 个用例，10 个测试文件，全部通过  |
 | 依赖     | jszip@3.10.1                       |
 
 ## 目录结构
@@ -69,7 +69,7 @@ clip2file/
 - **语言检测**：15+ 类型（Python、JS、TS、HTML、CSS、JSON、YAML、SQL、Shell、Dockerfile、C++、Java、Go、Rust、Markdown、纯文本）
 - **文件名推断**：首行标题提取，去除 Markdown 标记，截断 30 字符
 - **Popup 界面**：自动读取剪贴板，实时检测，文件名可编辑，一键保存
-- **右键菜单**：选中文字 → 右键 → Save as File with Clip2File
+- **右键菜单**：选中文字 → 右键 → 智能保存，或选择 TXT / Markdown / HTML / ZIP
 - **Options 页**：默认纯文本文件名设置，`chrome.storage` 持久化
 
 ### Phase 2：多文件/ZIP 导出 ✅
@@ -228,14 +228,22 @@ npm test         # vitest run
 - **修复**：去掉错误的重写逻辑，`postBuild` 只做文件名重命名（`popup.html` → `index.html`），保留 vite 默认的 `../` 路径不变
 - **验证**：构建后所有引用资源（`../popup.js`、`../chunks/*`、`../assets/*`、`../icons/*`）均存在且路径正确
 
-## 下一阶段：Phase 3（待规划）
+## Phase 3：多语言与右键格式选择 ✅
+
+- [x] Chrome 原生 English / 简体中文 locale 资源
+- [x] Popup、Options、manifest、右键菜单和动态状态文案国际化
+- [x] 右键保留智能保存，并增加 TXT / Markdown / HTML / ZIP 子菜单
+- [x] 显式格式冲突保护：多文件项目不强制转单文件，图片-only 不保存为 TXT
+- [x] 隐私政策联系方式更新为 `bk4ice@gmail.com`
+- [x] 新增格式策略测试和 locale key 完整性测试
+
+## 下一阶段：Phase 4（待规划）
 
 - [ ] 目录树可视化预览（嵌套文件夹展示）
 - [ ] 文件内容预览（点击文件名展开）
 - [ ] 支持更多 AI 输出格式（Anthropic `<artifact>` 块、Cursor 导出）
 - [ ] ZIP 内包含 README / 项目元信息
 - [ ] 拖拽导入 `.txt` / `.md` 文件解析
-- [ ] 国际化与主题切换
 - [ ] 图片格式转换（WebP → PNG）
 - [ ] 保存历史记录
 
@@ -261,7 +269,7 @@ npm test         # vitest run
 
 ```bash
   cd dist
-  zip -r ../clip2file-v1.0.0.zip .
+  zip -r ../clip2file-v1.1.0.zip .
   cd ..
 ```
 

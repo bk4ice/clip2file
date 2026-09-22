@@ -28,7 +28,7 @@
 - 复制网页里的图片或图文选区 → 保存为自包含的 `.html` 或 `.zip`
 - 复制 Python / JavaScript / JSON / Markdown 等代码 → 保存为 `main.py` / `script.js` / `data.json` / `README.md`
 - 复制包含多个代码块的网页内容 → 自动解析并导出为项目 ZIP
-- 在网页中右键选中的文字或图片 → 点击「Save as File with Clip2File」
+- 在网页中右键选中的文字或图片 → 选择「智能保存」或指定 TXT / Markdown / HTML / ZIP 格式
 - 随时随地按 `Alt + S` 快速保存剪贴板或选区
 
 **核心优势：**
@@ -48,7 +48,7 @@
 - 📦 多段内容自动打包成 ZIP
 - 🖼️ 支持剪贴板图片、网页图片、图文混排
 - ⚡ `Alt + S` 快速保存，`Alt + Y` 打开面板
-- 🖱️ 右键菜单：网页选区文字 / 图片 → 另存为文件
+- 🖱️ 右键菜单：保留智能保存，并支持选择 TXT / Markdown / HTML / ZIP
 - 🎨 简洁界面，支持浅色 / 深色模式
 
 ## 安装

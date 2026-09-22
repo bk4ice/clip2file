@@ -6,6 +6,7 @@ import { buildZip, downloadBlob } from '../core/zip-builder';
 import { buildMarkdown } from '../core/markdown-builder';
 import { buildHtml } from '../core/html-builder';
 import { getSettings } from '../utils/storage';
+import { applyI18n, t } from '../utils/i18n';
 import type { DetectResult, ParsedFile, ParseResult } from '../core/types';
 
 let autoCloseOnSave = false;
@@ -218,7 +219,14 @@ async function readClipboardImages(): Promise<ParsedFile[]> {
 
 function updateUI(result: DetectResult, content: string, parsed?: ParseResult): void {
   currentResult = result;
-  detectLabel.textContent = `${result.type === 'code' ? result.language : result.type}`;
+  const typeKey: Record<string, string> = {
+    text: 'typeText',
+    markdown: 'typeMarkdown',
+    json: 'typeJson',
+    yaml: 'typeYaml',
+    project: 'typeProject',
+  };
+  detectLabel.textContent = result.type === 'code' ? result.language : t(typeKey[result.type] || 'typeText');
   detectConfidence.textContent = `${Math.round(result.confidence * 100)}%`;
   detectDot.className = `detect-dot ${result.confidence >= 0.8 ? 'is-high' : result.confidence >= 0.6 ? 'is-mid' : 'is-low'}`;
   detectInfo.classList.remove('hidden');
@@ -332,7 +340,7 @@ saveBtn.addEventListener('click', async () => {
   const content = sourceInput.value;
 
   if (!content.trim()) {
-    showStatus('Nothing to save', 'error');
+    showStatus(t('statusNothingToSave'), 'error');
     return;
   }
 
@@ -353,10 +361,10 @@ saveBtn.addEventListener('click', async () => {
 
   try {
     await downloadTextFile(filename, content);
-    showStatus(`Saved as ${filename}`, 'success');
+    showStatus(t('statusSavedAs', filename), 'success');
     maybeAutoClose();
   } catch (err) {
-    showStatus(err instanceof Error ? err.message : 'Save failed', 'error');
+    showStatus(err instanceof Error ? err.message : t('statusSaveFailed'), 'error');
   }
 });
 
@@ -384,7 +392,7 @@ saveMdBtn.addEventListener('click', async () => {
   const selectedImages = getSelectedImages();
 
   if (!content.trim() && selectedImages.length === 0) {
-    showStatus('Nothing to save', 'error');
+    showStatus(t('statusNothingToSave'), 'error');
     return;
   }
 
@@ -394,7 +402,7 @@ saveMdBtn.addEventListener('click', async () => {
   const saveMdLabel = saveMdBtn.querySelector('.btn-label') as HTMLSpanElement;
   try {
     saveMdBtn.disabled = true;
-    saveMdLabel.textContent = 'Building…';
+    saveMdLabel.textContent = t('statusBuilding');
     const html = await buildHtml(content, images);
     let filename = filenameInput.value.trim() || 'clipboard.html';
     if (!filename.toLowerCase().endsWith('.html')) {
@@ -403,13 +411,13 @@ saveMdBtn.addEventListener('click', async () => {
       filename = sanitizeFilename(filename);
     }
     await downloadTextFile(filename, html);
-    showStatus(`Saved as ${filename} (${images.length} images embedded)`, 'success');
+    showStatus(t('statusSavedImages', [filename, String(images.length)]), 'success');
     maybeAutoClose();
   } catch (err) {
-    showStatus(err instanceof Error ? err.message : 'Save failed', 'error');
+    showStatus(err instanceof Error ? err.message : t('statusSaveFailed'), 'error');
   } finally {
     saveMdBtn.disabled = false;
-    saveMdLabel.textContent = 'Save as HTML';
+    saveMdLabel.textContent = t('popupSaveAsHtml');
   }
 });
 
@@ -418,7 +426,7 @@ saveZipBtn.addEventListener('click', async () => {
   const selectedImages = getSelectedImages();
 
   if (!content.trim() && selectedImages.length === 0) {
-    showStatus('Nothing to save', 'error');
+    showStatus(t('statusNothingToSave'), 'error');
     return;
   }
 
@@ -438,20 +446,20 @@ saveZipBtn.addEventListener('click', async () => {
   const saveZipLabel = saveZipBtn.querySelector('.btn-label') as HTMLSpanElement;
   try {
     saveZipBtn.disabled = true;
-    saveZipLabel.textContent = 'Zipping…';
+    saveZipLabel.textContent = t('statusZipping');
     const { blob, count } = await buildZip(files);
     if (count === 0) {
-      showStatus('No safe files to zip', 'error');
+      showStatus(t('statusNoSafeFiles'), 'error');
       return;
     }
     await downloadBlob(blob, 'clipboard.zip');
-    showStatus(`Saved ${count} files as clipboard.zip`, 'success');
+    showStatus(t('statusSavedFiles', [String(count), 'clipboard.zip']), 'success');
     maybeAutoClose();
   } catch (err) {
-    showStatus(err instanceof Error ? err.message : 'Save failed', 'error');
+    showStatus(err instanceof Error ? err.message : t('statusSaveFailed'), 'error');
   } finally {
     saveZipBtn.disabled = false;
-    saveZipLabel.textContent = 'Save as ZIP';
+    saveZipLabel.textContent = t('popupSaveAsZip');
   }
 });
 
@@ -467,7 +475,7 @@ zipBtn.addEventListener('click', async () => {
   }
 
   if (allFiles.length === 0) {
-    showStatus('No files selected', 'error');
+    showStatus(t('statusNoFilesSelected'), 'error');
     return;
   }
 
@@ -481,21 +489,21 @@ zipBtn.addEventListener('click', async () => {
   const zipLabel = zipBtn.querySelector('.btn-label') as HTMLSpanElement;
   try {
     zipBtn.disabled = true;
-    zipLabel.textContent = 'Zipping…';
+    zipLabel.textContent = t('statusZipping');
     const { blob, count, rejected } = await buildZip(allFiles);
     if (count === 0) {
-      showStatus('No safe files to zip', 'error');
+      showStatus(t('statusNoSafeFiles'), 'error');
       return;
     }
     await downloadBlob(blob, zipName);
     const note = rejected.length ? ` (${rejected.length} unsafe skipped)` : '';
-    showStatus(`Generated ${zipName} with ${count} files${note}`, 'success');
+    showStatus(t('statusGeneratedZip', [zipName, String(count), note]), 'success');
     maybeAutoClose();
   } catch (err) {
     showStatus(err instanceof Error ? err.message : 'ZIP failed', 'error');
   } finally {
     zipBtn.disabled = false;
-    zipLabel.textContent = 'Generate ZIP';
+    zipLabel.textContent = t('popupGenerateZip');
   }
 });
 
@@ -515,4 +523,5 @@ optionsBtn.addEventListener('click', () => {
   chrome.runtime.openOptionsPage?.();
 });
 
+applyI18n(document);
 document.addEventListener('DOMContentLoaded', loadClipboard);

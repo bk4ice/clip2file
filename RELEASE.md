@@ -24,7 +24,7 @@ npm run build
 
 ```bash
 cd dist
-zip -r ../clip2file-v1.0.0.zip .
+zip -r ../clip2file-v1.1.0.zip .
 ```
 
 注意：`manifest.json` 必须在 zip 根目录。
@@ -37,7 +37,7 @@ zip -r ../clip2file-v1.0.0.zip .
 
 | 素材 | 要求 | 状态 | 路径 |
 |------|------|------|------|
-| 扩展包 zip | manifest 在根目录 | 构建后生成 | `clip2file-v1.0.0.zip` |
+| 扩展包 zip | manifest 在根目录 | 构建后生成 | `clip2file-v1.1.0.zip` |
 | 图标 128×128 | PNG | ✅ | `public/icons/icon128.png` |
 | 隐私政策 URL | 公开可访问 | ✅ | https://bk4ice.github.io/clip2file/ |
 
@@ -65,7 +65,7 @@ zip -r ../clip2file-v1.0.0.zip .
 ### 4.1 基本信息
 
 - Name: Clip2File
-- Version: 1.0.0
+- Version: 1.1.0
 - Category: Productivity
 - Language: English / 中文（简体）
 
@@ -82,8 +82,9 @@ zip -r ../clip2file-v1.0.0.zip .
 > - Copy images or text + image selections → save as a self-contained `.html` or `.zip`
 > - Copy Python / JavaScript / JSON / Markdown code → save as `main.py` / `script.js` / `data.json` / `README.md`
 > - Copy a multi-code-block page → export as a project ZIP with proper paths
-> - Right-click selected text or image → click **Save as File with Clip2File**
+> - Right-click selected text or image → choose **Smart Save** or a specific format: TXT, Markdown, HTML, or ZIP
 > - Press `Alt + S` anywhere to quick-save clipboard or selection
+> - The explicit format menu never silently converts multi-file projects into a single file
 >
 > **Why it stands out:**
 > - ⚡ **Lightning fast**: one key or one right-click to save
@@ -105,8 +106,9 @@ zip -r ../clip2file-v1.0.0.zip .
 > - 复制网页里的图片或图文选区 → 保存为自包含的 `.html` 或 `.zip`
 > - 复制网页中的 Python / JavaScript / JSON / Markdown 等代码 → 保存为 `main.py` / `script.js` / `data.json` / `README.md`
 > - 复制包含多个代码块的网页内容 → 自动解析并导出为项目 ZIP
-> - 在网页中右键选中的文字或图片 → 点击「Save as File with Clip2File」
+> - 在网页中右键选中的文字或图片 → 选择「智能保存」或指定 TXT、Markdown、HTML、ZIP 格式
 > - 随时随地按 `Alt + S` 快速保存剪贴板或选区
+> - 显式格式选择不会静默把多文件项目转换成单个文件
 >
 > **核心优势：**
 > - ⚡ **极速**：一个快捷键或一次右键即可保存
@@ -126,7 +128,7 @@ zip -r ../clip2file-v1.0.0.zip .
 | 权限 | 用途 |
 |------|------|
 | `storage` | 保存设置（默认文件名、开关） |
-| `contextMenus` | 右键「Save as File with Clip2File」 |
+| `contextMenus` | 提供「智能保存」和 TXT / Markdown / HTML / ZIP 格式选择菜单 |
 | `downloads` | 下载文件到本机 |
 | `scripting` | 读取当前页选区内容 |
 | `activeTab` | 访问当前活动页 |
@@ -170,7 +172,7 @@ zip -r ../clip2file-v1.0.0.zip .
 
 - [ ] 开发者账号已注册并支付 $5
 - [ ] `dist/` 已生成
-- [ ] `clip2file-v1.0.0.zip` 已打包
+- [ ] `clip2file-v1.1.0.zip` 已打包
 - [ ] `manifest.json` 在 zip 根目录
 - [ ] `public/icons/icon128.png` 存在
 - [ ] 隐私政策页面 https://bk4ice.github.io/clip2file/ 可访问

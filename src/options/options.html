@@ -14,37 +14,37 @@
         <img src="../icons/icon48.png" alt="" class="sidebar-mark" />
         <div class="sidebar-brand-text">
           <span class="sidebar-name">Clip2File</span>
-          <span class="sidebar-sub">Settings</span>
+          <span class="sidebar-sub" data-i18n="optionsSettings">Settings</span>
         </div>
       </div>
 
       <div class="sidebar-nav" id="sidebar-nav">
         <button class="nav-item is-active" data-target="section-general">
           <svg viewBox="0 0 20 20" fill="none"><path d="M8.6 2.4c.2-.7.9-1.2 1.7-1.2s1.5.5 1.7 1.2l.2.7c.6.2 1.2.5 1.7.9l.7-.3c.7-.3 1.5-.1 2 .5.4.6.5 1.4.1 2l-.4.6c.3.6.5 1.2.6 1.8l.7.2c.7.2 1.2.9 1.2 1.7s-.5 1.5-1.2 1.7l-.7.2c-.1.6-.3 1.2-.6 1.8l.4.6c.4.6.3 1.4-.1 2-.5.6-1.3.8-2 .5l-.7-.3c-.5.4-1.1.7-1.7.9l-.2.7c-.2.7-.9 1.2-1.7 1.2s-1.5-.5-1.7-1.2l-.2-.7c-.6-.2-1.2-.5-1.7-.9l-.7.3c-.7.3-1.5.1-2-.5-.4-.6-.5-1.4-.1-2l.4-.6a6.9 6.9 0 0 1-.6-1.8l-.7-.2C1.5 11.5 1 10.8 1 10s.5-1.5 1.2-1.7l.7-.2c.1-.6.3-1.2.6-1.8l-.4-.6c-.4-.6-.3-1.4.1-2 .5-.6 1.3-.8 2-.5l.7.3c.5-.4 1.1-.7 1.7-.9l.2-.7Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><circle cx="10" cy="10" r="2.6" stroke="currentColor" stroke-width="1.4"/></svg>
-          <span>General</span>
+          <span data-i18n="optionsGeneral">General</span>
         </button>
         <button class="nav-item" data-target="section-shortcuts">
           <svg viewBox="0 0 20 20" fill="none"><rect x="2" y="5" width="16" height="10" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M5.5 8.5h1M8.5 8.5h1M11.5 8.5h1M14.5 8.5h1M5.5 11.5h9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-          <span>Shortcuts</span>
+          <span data-i18n="optionsShortcuts">Shortcuts</span>
         </button>
         <button class="nav-item" data-target="section-formats">
           <svg viewBox="0 0 20 20" fill="none"><path d="M6.5 2.5h5l3 3v10a1.2 1.2 0 0 1-1.2 1.2H6.5A1.2 1.2 0 0 1 5.3 15.5v-11A1.2 1.2 0 0 1 6.5 2.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M8 8.5h4M8 11h4M8 6h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-          <span>Formats</span>
+          <span data-i18n="optionsFormats">Formats</span>
         </button>
         <button class="nav-item" data-target="section-privacy">
           <svg viewBox="0 0 20 20" fill="none"><rect x="4.5" y="2" width="11" height="16" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M7 6.5h6M7 9.5h6M7 12.5h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-          <span>Privacy</span>
+          <span data-i18n="optionsPrivacy">Privacy</span>
         </button>
         <button class="nav-item" data-target="section-about">
           <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.4"/><path d="M10 9v4.2M10 6.6h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-          <span>About</span>
+          <span data-i18n="optionsAbout">About</span>
         </button>
       </div>
 
       <div class="sidebar-footer">
         <span class="badge-local">
           <svg viewBox="0 0 20 20" fill="none"><rect x="4.5" y="9" width="11" height="7.5" rx="1.6" stroke="currentColor" stroke-width="1.3"/><path d="M6.8 9V6.5a3.2 3.2 0 0 1 6.4 0V9" stroke="currentColor" stroke-width="1.3"/></svg>
-          On-device only
+          <span data-i18n="optionsOnDeviceOnly">On-device only</span>
         </span>
       </div>
     </nav>
@@ -54,17 +54,17 @@
       <!-- General -->
       <section class="content-section is-active" id="section-general">
         <header class="section-header">
-          <h1>General</h1>
-          <p>Defaults and behavior for saving clipboard content.</p>
+          <h1 data-i18n="optionsGeneral">General</h1>
+          <p data-i18n="optionsGeneralDescription">Defaults and behavior for saving clipboard content.</p>
         </header>
 
         <div class="group">
-          <div class="group-title">Naming</div>
+          <div class="group-title" data-i18n="optionsNaming">Naming</div>
           <div class="group-body">
             <div class="row row-stack">
               <div class="row-text">
-                <span class="row-label">Default filename for plain text</span>
-                <span class="row-hint">Used when Clip2File can't infer a title from the content</span>
+                <span class="row-label" data-i18n="optionsDefaultFilename">Default filename for plain text</span>
+                <span class="row-hint" data-i18n="optionsDefaultFilenameHint">Used when Clip2File can't infer a title from the content</span>
               </div>
               <input type="text" id="default-text" value="untitled" placeholder="untitled" class="text-field" />
             </div>
@@ -72,15 +72,15 @@
         </div>
 
         <div class="group">
-          <div class="group-title">Behavior</div>
+          <div class="group-title" data-i18n="optionsBehavior">Behavior</div>
           <div class="group-body">
             <div class="row">
               <div class="row-icon">
                 <svg viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="4" stroke="currentColor" stroke-width="1.4"/><path d="M10 6.5v4l2.6 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </div>
               <div class="row-text">
-                <span class="row-label">Shortcut badge feedback</span>
-                <span class="row-hint">Flash the toolbar icon green / red after Alt+S</span>
+                <span class="row-label" data-i18n="optionsBadgeFeedback">Shortcut badge feedback</span>
+                <span class="row-hint" data-i18n="optionsBadgeFeedbackHint">Flash the toolbar icon green / red after Alt+S</span>
               </div>
               <label class="switch">
                 <input type="checkbox" id="badge-toggle" checked />
@@ -93,8 +93,8 @@
                 <svg viewBox="0 0 20 20" fill="none"><rect x="3" y="4" width="14" height="12" rx="2.4" stroke="currentColor" stroke-width="1.4"/><path d="M7 8.3 9.2 10.5 13.5 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </div>
               <div class="row-text">
-                <span class="row-label">Auto-close after saving</span>
-                <span class="row-hint">Close the popup shortly after a successful save</span>
+                <span class="row-label" data-i18n="optionsAutoClose">Auto-close after saving</span>
+                <span class="row-hint" data-i18n="optionsAutoCloseHint">Close the popup shortly after a successful save</span>
               </div>
               <label class="switch">
                 <input type="checkbox" id="autoclose-toggle" />
@@ -105,8 +105,8 @@
         </div>
 
         <div class="section-actions">
-          <button id="save-settings" class="btn btn-primary">Save Changes</button>
-          <button id="reset-settings" class="btn btn-ghost">Restore Defaults</button>
+          <button id="save-settings" class="btn btn-primary" data-i18n="optionsSaveChanges">Save Changes</button>
+          <button id="reset-settings" class="btn btn-ghost" data-i18n="optionsRestoreDefaults">Restore Defaults</button>
         </div>
 
         <div id="status" class="inline-status hidden"></div>
@@ -115,25 +115,25 @@
       <!-- Shortcuts -->
       <section class="content-section" id="section-shortcuts">
         <header class="section-header">
-          <h1>Shortcuts</h1>
-          <p>Keyboard shortcuts registered for Clip2File.</p>
+          <h1 data-i18n="optionsShortcuts">Shortcuts</h1>
+          <p data-i18n="optionsShortcutsDescription">Keyboard shortcuts registered for Clip2File.</p>
         </header>
 
         <div class="group">
-          <div class="group-title">Registered keys</div>
+          <div class="group-title" data-i18n="optionsRegisteredKeys">Registered keys</div>
           <div class="group-body" id="shortcuts-list"></div>
         </div>
 
         <div class="section-actions">
-          <button id="open-shortcuts-btn" class="btn btn-secondary">Customize in Chrome…</button>
+          <button id="open-shortcuts-btn" class="btn btn-secondary"><span data-i18n="optionsCustomizeChrome">Customize in Chrome…</span></button>
         </div>
       </section>
 
       <!-- Formats -->
       <section class="content-section" id="section-formats">
         <header class="section-header">
-          <h1>Supported Formats</h1>
-          <p>Clip2File automatically detects these content types.</p>
+          <h1 data-i18n="optionsSupportedFormats">Supported Formats</h1>
+          <p data-i18n="optionsFormatsDescription">Clip2File automatically detects these content types.</p>
         </header>
 
         <div class="group">
@@ -164,15 +164,15 @@
       <!-- About -->
       <section class="content-section" id="section-about">
         <header class="section-header">
-          <h1>About</h1>
-          <p>Version, privacy, and data handling.</p>
+          <h1 data-i18n="optionsAbout">About</h1>
+          <p data-i18n="optionsAboutDescription">Version, privacy, and data handling.</p>
         </header>
 
         <div class="about-hero">
           <img src="../icons/icon128.png" alt="" class="about-mark" />
           <div class="about-hero-text">
             <span class="about-name">Clip2File</span>
-            <span id="version-badge" class="version-badge">Version 1.0.0</span>
+            <span id="version-badge" class="version-badge">Version 1.1.0</span>
           </div>
         </div>
 
@@ -180,35 +180,35 @@
           <div class="group-body">
             <div class="row">
               <div class="row-text"><span class="row-label">Version</span></div>
-              <span id="about-version" class="row-value">1.0.0</span>
+              <span id="about-version" class="row-value">1.1.0</span>
             </div>
             <div class="row-divider"></div>
             <div class="row" id="privacy-link-row" role="button" tabindex="0" style="cursor: pointer;">
               <div class="row-text">
-                <span class="row-label">Privacy policy</span>
-                <span class="row-hint">Click to view here, right-click/Shift+click to open online →</span>
+                <span class="row-label" data-i18n="optionsPrivacyPolicy">Privacy policy</span>
+                <span class="row-hint" data-i18n="optionsPrivacyPolicyHint">Click to view here, right-click/Shift+click to open online →</span>
               </div>
-              <span class="row-link">View policy →</span>
+              <span class="row-link" data-i18n="optionsViewPolicy">View policy →</span>
             </div>
             <div class="row-divider"></div>
             <div class="row">
-              <div class="row-text"><span class="row-label">Data handling</span></div>
+              <div class="row-text"><span class="row-label" data-i18n="optionsDataHandling">Data handling</span></div>
               <span class="badge-local badge-local-inline">
                 <svg viewBox="0 0 20 20" fill="none"><rect x="4.5" y="9" width="11" height="7.5" rx="1.6" stroke="currentColor" stroke-width="1.3"/><path d="M6.8 9V6.5a3.2 3.2 0 0 1 6.4 0V9" stroke="currentColor" stroke-width="1.3"/></svg>
-                Processed locally, never uploaded
+                <span data-i18n="optionsProcessedLocally">Processed locally, never uploaded</span>
               </span>
             </div>
           </div>
         </div>
 
-        <p class="page-footer">Made for people who copy things from AI chats.</p>
+        <p class="page-footer" data-i18n="optionsFooter">Made for people who copy things from AI chats.</p>
       </section>
 
       <!-- Privacy -->
       <section class="content-section" id="section-privacy">
         <header class="section-header">
-          <h1>Privacy</h1>
-          <p>How Clip2File handles your data.</p>
+          <h1 data-i18n="optionsPrivacy">Privacy</h1>
+          <p data-i18n="optionsPrivacyDescription">How Clip2File handles your data.</p>
         </header>
 
         <div class="privacy-card" lang="zh-CN">
@@ -242,7 +242,7 @@
           <p>扩展仅使用 <code>chrome.storage.local</code> 存储用户偏好设置（默认文件名、界面开关），数据永久保留在用户本机，随扩展卸载而清除，开发者无法访问。</p>
 
           <h3>联系方式</h3>
-          <p>如对本隐私政策有任何疑问，请通过以下方式联系开发者：<em>（请在此填写你的邮箱或 GitHub 地址）</em></p>
+          <p>如对本隐私政策有任何疑问，请通过以下方式联系开发者：<em>bk4ice@gmail.com</em></p>
         </div>
 
         <hr class="privacy-divider" />
@@ -278,7 +278,7 @@
           <p>The Extension uses <code>chrome.storage.local</code> to store user preferences (default filename, UI toggles). This data stays on the user's device and is cleared on uninstall.</p>
 
           <h3>Contact</h3>
-          <p>Questions about this policy can be sent to: <em>(insert your email or GitHub URL here)</em></p>
+          <p>Questions about this policy can be sent to: <em>bk4ice@gmail.com</em></p>
         </div>
       </section>
     </main>

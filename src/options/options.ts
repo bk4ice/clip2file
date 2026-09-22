@@ -1,4 +1,5 @@
 import { getSettings, setSettings, getCommands, DEFAULT_SETTINGS } from '../utils/storage';
+import { applyI18n, t } from '../utils/i18n';
 
 const defaultTextInput = document.getElementById('default-text') as HTMLInputElement;
 const badgeToggle = document.getElementById('badge-toggle') as HTMLInputElement;
@@ -55,22 +56,22 @@ async function loadShortcuts(): Promise<void> {
       const key = document.createElement('span');
       const shortcut = cmd.shortcut || '';
       key.className = `shortcut-key${shortcut ? '' : ' unset'}`;
-      key.textContent = shortcut || 'Not set';
+      key.textContent = shortcut || t('optionsNotSet');
 
       item.appendChild(desc);
       item.appendChild(key);
       shortcutsList.appendChild(item);
     }
   } catch {
-    shortcutsList.textContent = 'Unable to load shortcuts.';
+    shortcutsList.textContent = t('optionsShortcutsLoadFailed');
   }
 }
 
 function loadMeta(): void {
   try {
     const manifest = chrome.runtime.getManifest();
-    const version = manifest.version || '1.0.0';
-    versionBadge.textContent = `Version ${version}`;
+    const version = manifest.version || '1.1.0';
+    versionBadge.textContent = t('optionsVersion', version);
     aboutVersion.textContent = version;
   } catch {
     // chrome.runtime unavailable outside extension context (shouldn't happen)
@@ -98,6 +99,7 @@ function bindPrivacyLink(): void {
 }
 
 async function load(): Promise<void> {
+  document.title = t('optionsTitle');
   const settings = await getSettings();
   defaultTextInput.value = settings.defaultTextName;
   badgeToggle.checked = settings.badgeFeedback;
@@ -114,7 +116,7 @@ saveBtn.addEventListener('click', async () => {
     badgeFeedback: badgeToggle.checked,
     autoCloseOnSave: autoCloseToggle.checked,
   });
-  showStatus('Settings saved', 'success');
+  showStatus(t('optionsSettingsSaved'), 'success');
 });
 
 resetBtn.addEventListener('click', async () => {
@@ -122,11 +124,12 @@ resetBtn.addEventListener('click', async () => {
   badgeToggle.checked = DEFAULT_SETTINGS.badgeFeedback;
   autoCloseToggle.checked = DEFAULT_SETTINGS.autoCloseOnSave;
   await setSettings({ ...DEFAULT_SETTINGS });
-  showStatus('Restored default settings', 'success');
+  showStatus(t('optionsDefaultsRestored'), 'success');
 });
 
 openShortcutsBtn.addEventListener('click', () => {
   chrome.tabs.create({ url: 'chrome://extensions/shortcuts' });
 });
 
+applyI18n(document);
 document.addEventListener('DOMContentLoaded', load);

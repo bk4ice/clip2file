@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "Clip2File",
-  "version": "1.0.0",
-  "description": "Turn clipboard content into the right file, instantly.",
+  "name": "__MSG_manifestName__",
+  "version": "1.1.0",
+  "description": "__MSG_manifestDescription__",
+  "default_locale": "en",
   "permissions": [
     "storage",
     "contextMenus",
@@ -39,14 +40,14 @@
         "default": "Alt+S",
         "mac": "Alt+S"
       },
-      "description": "Quick save current selection (or clipboard) as a file"
+      "description": "__MSG_commandQuickSave__"
     },
     "_execute_action": {
       "suggested_key": {
         "default": "Alt+Y",
         "mac": "Alt+Y"
       },
-      "description": "Open Clip2File popup"
+      "description": "__MSG_commandOpenPopup__"
     }
   }
 }
