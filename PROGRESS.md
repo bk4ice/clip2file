@@ -7,10 +7,10 @@
 | 项目     | 内容                               |
 | -------- | ---------------------------------- |
 | 名称     | Clip2File                          |
-| 版本     | 1.1.0                              |
+| 版本     | 1.2.0                              |
 | Manifest | V3                                 |
 | 技术栈   | TypeScript + Vite + Vitest + JSZip |
-| 测试     | 81 个用例，10 个测试文件，全部通过  |
+| 测试     | 116 个用例、15 个单元/DOM/后台测试文件；6 个 Chromium MV3 用例通过 |
 | 依赖     | jszip@3.10.1                       |
 
 ## 目录结构
@@ -237,8 +237,34 @@ npm test         # vitest run
 - [x] 隐私政策联系方式更新为 `bk4ice@gmail.com`
 - [x] 新增格式策略测试和 locale key 完整性测试
 
-## 下一阶段：Phase 4（待规划）
+## 1.2.0：结构化网页选区导出（本地修改记录）
 
+- 提取选区结构，保留标题、段落、链接、嵌套列表、表格、代码块与图片位置；不提取整篇正文。
+- 新增安全 HTML 输出和 Markdown 资料 ZIP（`content.md` + `assets/`），图片相对路径可移植。
+- 缺图在原位显示说明；合并/不规则表格在 Markdown 中保留安全 HTML 并反馈兼容性限制。
+- 右键支持选中 frame；网页 Shadow DOM 提示区分生成、部分完成与失败，非成功提示可手动关闭；受限页面以角标和图标悬停标题兜底。
+- 图片加载具备请求/后备超时、单张与累计大小限制；ZIP 图片转为 Uint8Array，兼容无 FileReader 的 MV3 后台。
+- 修复空选区成功反馈、下载图片失败后 TXT 静默丢图、HTML 样式文本直接执行、locale 重复 key 和中文项目类型标签错误。
+- 修正前版误改的 `isarray` 锁文件版本：与 tarball 和上游 `~1.0.0` 要求一致，重新安装后 `npm ls --all` 通过（仅有平台/功能性可选依赖未安装）。
+- 2026-10-08 验证：`npm test` 15 个文件、116 个用例通过；`npm exec -- tsc --noEmit` 和 `npm run build` 通过；`npm run test:browser` 6 个用例通过。
+- Chromium MV3 覆盖：中英 UI、实际 HTML 下载与离线图片、Markdown ZIP 字节/引用、缺图与 TXT 拒绝、iframe、纯图片快捷保存处理器、受限页面图标标题兜底。
+- 浏览器测试使用临时扩展静态捕获回调，不向生产包添加测试接口；原生右键菜单点击、系统快捷键与其他实际站点仍需手动验收。
+- 构建脚本重新生成了图标，`icon16.png` 与 `icon128.png` 各出现 1 字节编码差异，保留在本地供提交前复核。
+- 未新增 CSV/TSV、OCR、PDF、正文识别、来源信息设置、保存历史或完整预览编辑器。
+- 用户已有产品方案与 `clip2file-v1.1.0.zip` 不纳入改动；本轮尚未提交或推送。
+
+### 评分与反馈引导（双语）
+
+- Popup 底部新增静态页脚：左侧星级链接到 Chrome 应用商店条目，右侧链接到 GitHub Issues；均为 `target="_blank"` 外链，不弹窗、不打断保存流程。
+- Options About 页新增「Support Clip2File / 支持 Clip2File」区块：评分行（商店链接）与反馈行（GitHub Issues，提示中附邮箱 bk4ice@gmail.com）。
+- 新增 10 个 i18n key（`popupRateUs`、`popupFeedback`、`optionsSupport` 等），en/zh_CN 双语与 `i18n.ts` fallback 均已同步。
+- RELEASE.md 中英文商店描述末尾各加一行评分邀请文案，供商店 listing 使用。
+- 刻意不做：保存成功后的评分弹窗、按使用次数触发的提示——避免打断核心流程，降低卸载风险。
+
+## 后续候选（未实施）
+
+- [ ] 网页表格 CSV/TSV（含合并单元格、选区范围和 Excel 兼容性规则）
+- [ ] 可选来源信息（标题、链接与保存时间）
 - [ ] 目录树可视化预览（嵌套文件夹展示）
 - [ ] 文件内容预览（点击文件名展开）
 - [ ] 支持更多 AI 输出格式（Anthropic `<artifact>` 块、Cursor 导出）

@@ -1,8 +1,16 @@
 import { describe, it, expect } from 'vitest';
 import { buildZip } from '../src/core/zip-builder';
+import JSZip from 'jszip';
 import type { ParsedFile } from '../src/core/types';
 
 describe('buildZip', () => {
+  it('preserves binary image bytes in the ZIP', async () => {
+    const { blob } = await buildZip([
+      { path: 'assets/image.png', language: 'image', content: '', blob: new Blob([new Uint8Array([1, 2, 3])], { type: 'image/png' }), nameSource: 'clipboard-image' },
+    ]);
+    const zip = await JSZip.loadAsync(await blob.arrayBuffer());
+    expect(Array.from(await zip.file('assets/image.png')!.async('uint8array'))).toEqual([1, 2, 3]);
+  });
   it('packs multiple files into a zip blob', async () => {
     const files: ParsedFile[] = [
       { path: 'app.py', language: 'python', content: 'print(1)', nameSource: 'inferred' },

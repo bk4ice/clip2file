@@ -5,8 +5,8 @@
 <h1 align="center">Clip2File</h1>
 
 <p align="center">
-  把剪贴板内容，直接变成文件。<br/>
-  <strong>Save clipboard content as the right file, instantly.</strong>
+  把选中的网页内容，直接变成可用的本地文件。<br/>
+  <strong>Save selected web content as useful local files.</strong>
 </p>
 
 <p align="center">
@@ -51,6 +51,23 @@
 - 🖱️ 右键菜单：保留智能保存，并支持选择 TXT / Markdown / HTML / ZIP
 - 🎨 简洁界面，支持浅色 / 深色模式
 
+## 1.2.0：网页选区保存质量升级
+
+以用户选中的区域为范围，不抓取整篇文章或整页镜像。
+
+- HTML 保留选区内标题、段落、列表、链接、表格和图文顺序，图片内嵌以便离线阅读。
+- 右键 Markdown：无图片生成 `.md`；有图片生成 ZIP，包含 `content.md` 与 `assets/`，图片使用相对路径。
+- 合并单元格或不规则表格在 Markdown 中保留为安全 HTML，并提示编辑器兼容性限制；不提供 CSV/TSV。
+- 缺失图片保留原位说明，并显示可关闭的部分完成提示；失败不再只记录在控制台。
+- TXT 不保留格式或链接地址，含图片的选区仍需使用 HTML/Markdown。
+- 图片请求限制：单张 10 MiB、总计 30 MiB、最多 100 个资源；网络/画布后备单次最多 8 秒，整个图片阶段最多 45 秒。
+- 不导出网页脚本、事件属性或不安全链接。不支持背景图片、Canvas、视频、闭合 Shadow DOM 和虚拟列表中未加载的内容。
+- 剪贴板 Popup 保留既有操作；本次结构化提取针对右键和 Alt+S 的网页选区。
+
+### English
+
+Save only the selected web content, not the entire article or page. HTML preserves semantic structure and image order with embedded offline images. Markdown selections without images produce `.md`; selections with images produce a ZIP containing `content.md` and relative `assets/` files. Missing images retain placeholders and trigger a dismissible partial-result warning. Merged or irregular tables remain safe HTML inside Markdown with a compatibility warning.
+
 ## 安装
 
 ### 方式一：Chrome Web Store（推荐方式）
@@ -79,6 +96,16 @@ npm run dev      # 开发模式
 npm run build    # 构建扩展
 npm test         # 运行测试
 ```
+
+真实 Chromium MV3 导出测试：
+
+```bash
+npm exec -- playwright install chromium
+npm run build
+npm run test:browser
+```
+
+浏览器测试通过临时扩展静态捕获菜单回调，验证真实后台、页面注入、图片获取和下载；原生右键点击及系统 Alt+S 仍需手动验收。测试不会修改用户的 Chrome 资料目录。安装测试浏览器时可设置 `PLAYWRIGHT_SKIP_BROWSER_GC=1`，避免自动清理旧版测试浏览器缓存。
 
 ## 项目结构
 

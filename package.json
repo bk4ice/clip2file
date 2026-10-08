@@ -1,13 +1,14 @@
 {
   "name": "clip2file",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Save clipboard content or web selection as the right file, instantly.",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && python scripts/gen-icons.py && vite build",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:browser": "playwright test"
   },
   "repository": {
     "type": "git",
@@ -20,7 +21,9 @@
   },
   "homepage": "https://github.com/bk4ice/clip2file#readme",
   "devDependencies": {
+    "@playwright/test": "1.56.1",
     "@types/chrome": "^0.0.280",
+    "jsdom": "26.1.0",
     "typescript": "^5.6.3",
     "vite": "^6.0.3",
     "vitest": "^2.1.8"

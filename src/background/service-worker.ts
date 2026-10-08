@@ -3,11 +3,20 @@ import { getSettings } from '../utils/storage';
 import { parseProject } from '../core/parser';
 import { sanitizeFilename } from '../core/sanitizer';
 import { buildZip } from '../core/zip-builder';
-import { buildMarkdown } from '../core/markdown-builder';
+import { blobToDataUrl } from '../core/markdown-builder';
+import { extractSelectionContent as extractStructuredSelection } from '../core/selection';
+import { buildSelectionFile } from '../core/selection-builder';
+import { loadSelectionAssets } from '../core/image-loader';
+import { showPageFeedback } from './page-feedback';
 import { buildHtml } from '../core/html-builder';
 import { decideFormat, type SaveMode } from '../core/save-format';
 import { t } from '../utils/i18n';
-import type { ParsedFile } from '../core/types';
+import type { ParsedFile, SelectionContent } from '../core/types';
+
+interface SaveFeedback {
+  message: string;
+  type: 'success' | 'warning';
+}
 
 const MENU_SMART_SAVE = 'clip2file-save';
 const MENU_FORMAT = 'clip2file-format';
@@ -148,17 +157,9 @@ function downloadTextInPage(text: string, name: string, mime: string): void {
 /** Convert a Blob to a base64 string (without data: prefix).
  *  Required because chrome.scripting.executeScript args must be
  *  JSON-serializable — ArrayBuffer/TypedArray are not. */
-function blobToBase64(blob: Blob): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const dataUrl = reader.result as string;
-      const comma = dataUrl.indexOf(',');
-      resolve(comma >= 0 ? dataUrl.slice(comma + 1) : dataUrl);
-    };
-    reader.onerror = reject;
-    reader.readAsDataURL(blob);
-  });
+async function blobToBase64(blob: Blob): Promise<string> {
+  const dataUrl = await blobToDataUrl(blob);
+  return dataUrl.slice(dataUrl.indexOf(',') + 1);
 }
 
 /** Fetch an image URL from the service worker (not subject to page CORS).
@@ -196,27 +197,40 @@ async function fetchImageAsParsedFile(
 /** Injected helper: draw an image to canvas and export as PNG base64.
  *  This is the CORS fallback — works for same-origin images or images with
  *  permissive CORS headers. Returns null if the canvas is tainted. */
-function fetchImageViaCanvas(url: string): Promise<string | null> {
+function fetchImageViaCanvas(url: string, timeoutMs = 8000, maxBytes = 10 * 1024 * 1024): Promise<string | null> {
   return new Promise((resolve) => {
     const img = new Image();
+    let finished = false;
+    const timer = setTimeout(() => finish(null), timeoutMs);
+    function finish(result: string | null): void {
+      if (finished) return;
+      finished = true;
+      clearTimeout(timer);
+      img.onload = null;
+      img.onerror = null;
+      img.src = '';
+      resolve(result);
+    }
     img.crossOrigin = 'anonymous';
     img.onload = () => {
       try {
         const canvas = document.createElement('canvas');
         canvas.width = img.naturalWidth || img.width;
         canvas.height = img.naturalHeight || img.height;
+        if (canvas.width * canvas.height > 16 * 1024 * 1024) return finish(null);
         const ctx = canvas.getContext('2d');
-        if (!ctx) return resolve(null);
+        if (!ctx) return finish(null);
         ctx.drawImage(img, 0, 0);
         const dataUrl = canvas.toDataURL('image/png');
         const comma = dataUrl.indexOf(',');
-        resolve(comma >= 0 ? dataUrl.slice(comma + 1) : dataUrl);
+        const base64 = comma >= 0 ? dataUrl.slice(comma + 1) : dataUrl;
+        finish(base64.length * 3 / 4 > maxBytes ? null : base64);
       } catch {
         // Canvas tainted by cross-origin image
-        resolve(null);
+        finish(null);
       }
     };
-    img.onerror = () => resolve(null);
+    img.onerror = () => finish(null);
     img.src = url;
   });
 }
@@ -225,19 +239,25 @@ function fetchImageViaCanvas(url: string): Promise<string | null> {
  *  Extracts selection content (text + image URLs) from the active tab,
  *  downloads images in the service worker (bypassing page CORS), then
  *  downloads the result as the appropriate file type. */
-async function saveSelectionFromTab(tabId: number, mode: SaveMode = 'auto'): Promise<void> {
-  const results = await chrome.scripting.executeScript({
-    target: { tabId },
-    func: extractSelectionContent,
+async function saveSelectionFromTab(tabId: number, mode: SaveMode = 'auto', frameId = 0): Promise<SaveFeedback> {
+  const target = { tabId, frameIds: [frameId] };
+  const results = await chrome.scripting.executeScript({ target, func: extractStructuredSelection });
+  const extracted = results[0]?.result as SelectionContent | undefined;
+  if (!extracted) throw new Error('statusNothingToSave');
+  const selectedText = extracted.text;
+  const containsImage = (nodes: SelectionContent['nodes']): boolean => nodes.some((node) => node.kind === 'image' || (node.kind === 'element' && containsImage(node.children)));
+  const hasImages = containsImage(extracted.nodes);
+  if (!selectedText && !hasImages) throw new Error('statusNothingToSave');
+  const result = detect(selectedText);
+  const decision = decideFormat(mode, {
+    hasText: Boolean(selectedText.trim()),
+    imageCount: hasImages ? Math.max(1, extracted.imageSources.length) : 0,
+    isProject: result.type === 'project',
+    suggestedFilename: result.suggestedFilename,
   });
-
-  const extracted = results[0]?.result as ExtractedContent | undefined;
-  const selectedText = extracted?.text || '';
-  const imageUrls = extracted?.imageUrls || [];
-
-  if (!selectedText && imageUrls.length === 0) {
-    console.warn('[Clip2File] empty selection');
-    return;
+  if (!decision.allowed) {
+    const reasonKeys: Record<string, string> = { 'empty': 'statusNothingToSave', 'project-requires-zip': 'selectionProjectRequiresZip', 'text-cannot-save-images': 'selectionTextCannotSaveImages' };
+    throw new Error(reasonKeys[decision.reason || 'empty']);
   }
 
   // Get the page URL for referer header when fetching images.
@@ -245,117 +265,58 @@ async function saveSelectionFromTab(tabId: number, mode: SaveMode = 'auto'): Pro
   const pageUrl = tab.url || '';
 
   // --- Download images from the service worker (not subject to page CORS) ---
-  const imageFiles: ParsedFile[] = [];
-  for (let i = 0; i < imageUrls.length; i++) {
-    const url = imageUrls[i];
-    let file: ParsedFile | null = null;
-
-    // Strategy 1: direct fetch from service worker
-    file = await fetchImageAsParsedFile(url, i + 1, pageUrl);
-
+  // Strategy 1: direct fetch from service worker
+  const assets = await loadSelectionAssets(extracted.imageSources, async (url, timeoutMs, maxBytes) => {
     // Strategy 2: if direct fetch failed, try canvas extraction in the page
-    if (!file) {
-      const b64 = await chrome.scripting
-        .executeScript({
-          target: { tabId },
-          func: fetchImageViaCanvas,
-          args: [url],
-        })
-        .then((r) => r[0]?.result as string | null)
-        .catch(() => null);
+    const responses = await chrome.scripting.executeScript({ target, func: fetchImageViaCanvas, args: [url, timeoutMs, maxBytes] });
+    const b64 = responses[0]?.result;
+    if (!b64) return null;
+    const binary = atob(b64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    return new Blob([bytes], { type: 'image/png' });
+  });
+  const imageFiles = assets.flatMap((asset) => asset.file ? [asset.file] : []);
 
-      if (b64) {
-        const binary = atob(b64);
-        const bytes = new Uint8Array(binary.length);
-        for (let j = 0; j < binary.length; j++) bytes[j] = binary.charCodeAt(j);
-        file = {
-          path: `image-${i + 1}.png`,
-          language: 'image',
-          content: '',
-          blob: new Blob([bytes], { type: 'image/png' }),
-          mimeType: 'image/png',
-          nameSource: 'clipboard-image',
-        };
-      }
-    }
-
-    if (file) {
-      imageFiles.push(file);
+  if (mode === 'html' || mode === 'markdown' || (mode === 'auto' && (hasImages || (extracted.rich && result.type !== 'code' && result.type !== 'project' && result.type !== 'json')))) {
+    const built = await buildSelectionFile(extracted, assets, mode === 'markdown' ? 'markdown' : 'html', result.suggestedFilename, {
+      missingImage: t('selectionMissingImage'), complexTable: t('selectionComplexTable'),
+    });
+    if (built.blob) {
+      const base64 = await blobToBase64(built.blob);
+      await chrome.scripting.executeScript({ target, func: downloadBase64Blob, args: [base64, built.filename, built.mime] });
     } else {
-      console.warn(`[Clip2File] could not fetch image: ${url}`);
+      await chrome.scripting.executeScript({ target, func: downloadTextInPage, args: [built.text || '', built.filename, built.mime] });
     }
+    const details = [t('selectionDownloadRequested', [built.filename, String(built.imageCount), String(built.tableCount)])];
+    if (built.missingImageCount) details.push(t('selectionPartialImages', String(built.missingImageCount)));
+    if (built.issues.includes('complex-table')) details.push(t('selectionComplexTable'));
+    return { message: details.join('\n'), type: built.issues.length ? 'warning' : 'success' };
   }
 
-  const result = detect(selectedText);
-
-  if (mode !== 'auto') {
-    const decision = decideFormat(mode, {
-      hasText: Boolean(selectedText.trim()),
-      imageCount: imageFiles.length,
-      isProject: result.type === 'project',
-      suggestedFilename: result.suggestedFilename,
-    });
-
-    if (!decision.allowed) {
-      console.warn(`[Clip2File] format rejected: ${decision.reason}`);
-      throw new Error(`format rejected: ${decision.reason}`);
+  if (mode === 'zip') {
+    const files: ParsedFile[] = result.type === 'project' ? parseProject(selectedText).files : selectedText ? [{
+      path: sanitizeFilename(result.suggestedFilename), language: result.language || 'text', content: selectedText, nameSource: 'inferred',
+    }] : [];
+    files.push(...imageFiles);
+    const failed = assets.filter((asset) => !asset.file).length;
+    if (failed) {
+      const paths = new Set(files.map((file) => file.path));
+      let path = 'clip2file-export-warnings.txt';
+      for (let index = 1; paths.has(path); index++) path = `clip2file-export-warnings-${index}.txt`;
+      files.push({ path, language: 'text', content: t('selectionZipPartialImages', String(failed)), nameSource: 'inferred' });
     }
+    const { blob, count, rejected } = await buildZip(files);
+    if (!count) throw new Error('statusNoSafeFiles');
+    const base64 = await blobToBase64(blob);
+    await chrome.scripting.executeScript({ target, func: downloadBase64Blob, args: [base64, decision.filename, 'application/zip'] });
+    const note = failed ? '\n' + t('selectionZipPartialImages', String(failed)) : '';
+    return { message: t('selectionFilesRequested', [decision.filename, String(count)]) + note, type: failed || rejected.length ? 'warning' : 'success' };
+  }
 
-    if (mode === 'zip') {
-      const files: ParsedFile[] = [];
-      if (selectedText.trim()) {
-        if (result.type === 'project') {
-          files.push(...parseProject(selectedText).files);
-        } else {
-          files.push({
-            path: sanitizeFilename(result.suggestedFilename),
-            language: result.language || 'text',
-            content: selectedText,
-            nameSource: 'inferred',
-          });
-        }
-      }
-      files.push(...imageFiles);
-      const { blob, count } = await buildZip(files);
-      if (count === 0) {
-        console.warn('[Clip2File] no safe files to zip');
-        throw new Error('no safe files to zip');
-      }
-      const base64 = await blobToBase64(blob);
-      await chrome.scripting.executeScript({
-        target: { tabId },
-        func: downloadBase64Blob,
-        args: [base64, decision.filename, 'application/zip'],
-      });
-      return;
-    }
-
-    if (mode === 'markdown') {
-      const markdown = await buildMarkdown(selectedText, imageFiles);
-      await chrome.scripting.executeScript({
-        target: { tabId },
-        func: downloadTextInPage,
-        args: [markdown, decision.filename, 'text/markdown;charset=utf-8'],
-      });
-      return;
-    }
-
-    if (mode === 'html') {
-      const html = await buildHtml(selectedText, imageFiles);
-      await chrome.scripting.executeScript({
-        target: { tabId },
-        func: downloadTextInPage,
-        args: [html, decision.filename, 'text/html;charset=utf-8'],
-      });
-      return;
-    }
-
-    await chrome.scripting.executeScript({
-      target: { tabId },
-      func: downloadTextInPage,
-      args: [selectedText, decision.filename, 'text/plain;charset=utf-8'],
-    });
-    return;
+  if (mode === 'text') {
+    await chrome.scripting.executeScript({ target, func: downloadTextInPage, args: [selectedText, decision.filename, 'text/plain;charset=utf-8'] });
+    return { message: t('selectionTextRequested', decision.filename), type: 'success' };
   }
 
   // --- Multi-file project (text only, no images in ZIP) ---
@@ -364,18 +325,18 @@ async function saveSelectionFromTab(tabId: number, mode: SaveMode = 'auto'): Pro
     const { blob, count, rejected } = await buildZip(parsed.files);
     if (count === 0) {
       console.warn('[Clip2File] no safe files to zip');
-      return;
+      throw new Error('statusNoSafeFiles');
     }
     const base64 = await blobToBase64(blob);
     const zipName = sanitizeFilename(result.suggestedFilename);
 
     await chrome.scripting.executeScript({
-      target: { tabId },
+      target,
       func: downloadBase64Blob,
       args: [base64, zipName, 'application/zip'],
     });
 
-    return;
+    return { message: t('selectionFilesRequested', [zipName, String(count)]), type: rejected.length ? 'warning' : 'success' };
   }
 
   // --- Has images: build a self-contained HTML file with embedded base64 images ---
@@ -388,32 +349,33 @@ async function saveSelectionFromTab(tabId: number, mode: SaveMode = 'auto'): Pro
     filename = sanitizeFilename(filename).replace(/\.[^.]+$/, '') + '.html';
 
     await chrome.scripting.executeScript({
-      target: { tabId },
+      target,
       func: downloadTextInPage,
       args: [html, filename, 'text/html;charset=utf-8'],
     });
 
-    return;
+    return { message: t('selectionDownloadRequested', [filename, String(imageFiles.length), '0']), type: 'success' };
   }
 
   // --- Single text file (no images) ---
   const filename = sanitizeFilename(result.suggestedFilename);
 
   await chrome.scripting.executeScript({
-    target: { tabId },
+    target,
     func: downloadTextInPage,
     args: [selectedText, filename, 'text/plain;charset=utf-8'],
   });
+  return { message: t('selectionFileRequested', filename), type: 'success' };
 }
 
 /** Fallback: save clipboard content when there is no page selection
  *  (e.g. shortcut pressed with nothing selected). Reads clipboard text
  *  in the service worker via the offscreen API fallback. */
-async function saveFromClipboard(): Promise<void> {
+async function saveFromClipboard(): Promise<SaveFeedback> {
   // In MV3 service workers, navigator.clipboard is not available.
   // We use chrome.scripting to read clipboard from the active tab.
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  if (!tab?.id) return;
+  if (!tab?.id) throw new Error('selectionRestrictedPage');
 
   const results = await chrome.scripting.executeScript({
     target: { tabId: tab.id },
@@ -422,7 +384,7 @@ async function saveFromClipboard(): Promise<void> {
   const text = (results[0]?.result as string) || '';
   if (!text.trim()) {
     console.warn('[Clip2File] clipboard empty and no selection');
-    return;
+    throw new Error('statusNothingToSave');
   }
 
   const result = detect(text);
@@ -431,7 +393,7 @@ async function saveFromClipboard(): Promise<void> {
   if (result.type === 'project') {
     const parsed = parseProject(text);
     const { blob, count } = await buildZip(parsed.files);
-    if (count === 0) return;
+    if (count === 0) throw new Error('statusNoSafeFiles');
     const base64 = await blobToBase64(blob);
     const zipName = sanitizeFilename(result.suggestedFilename);
     await chrome.scripting.executeScript({
@@ -439,7 +401,7 @@ async function saveFromClipboard(): Promise<void> {
       func: downloadBase64Blob,
       args: [base64, zipName, 'application/zip'],
     });
-    return;
+    return { message: t('selectionFilesRequested', [zipName, String(count)]), type: 'success' };
   }
 
   await chrome.scripting.executeScript({
@@ -447,18 +409,15 @@ async function saveFromClipboard(): Promise<void> {
     func: downloadTextInPage,
     args: [text, filename, 'text/plain;charset=utf-8'],
   });
+  return { message: t('selectionFileRequested', filename), type: 'success' };
 }
 
 /** Check whether the active tab has a non-empty text selection. */
 async function hasSelection(tabId: number): Promise<boolean> {
-  const results = await chrome.scripting.executeScript({
-    target: { tabId },
-    func: () => {
-      const sel = window.getSelection();
-      return !!(sel && sel.rangeCount > 0 && sel.toString().trim());
-    },
-  });
-  return results[0]?.result === true;
+  const results = await chrome.scripting.executeScript({ target: { tabId }, func: extractStructuredSelection });
+  const selection = results[0]?.result;
+  const containsImage = (nodes: SelectionContent['nodes']): boolean => nodes.some((node) => node.kind === 'image' || (node.kind === 'element' && containsImage(node.children)));
+  return Boolean(selection && (selection.text.trim() || containsImage(selection.nodes)));
 }
 
 const MENU_MODES: Record<string, SaveMode> = {
@@ -469,15 +428,27 @@ const MENU_MODES: Record<string, SaveMode> = {
   [MENU_ZIP]: 'zip',
 };
 
+function saveErrorMessage(error: unknown): string {
+  const key = error instanceof Error ? error.message : '';
+  const known = ['statusNothingToSave', 'statusNoSafeFiles', 'selectionProjectRequiresZip', 'selectionTextCannotSaveImages', 'selectionRestrictedPage'];
+  if (key === 'selection-too-large') return t('selectionTooLarge');
+  return t(known.includes(key) ? key : 'selectionSaveFailed');
+}
+
+async function reportFeedback(tabId: number, feedback: { message: string; type: 'success' | 'warning' | 'error' }, frameId = 0): Promise<void> {
+  await chrome.action.setTitle({ title: 'Clip2File — ' + feedback.message });
+  await flashBadge(feedback.type === 'success' ? 'success' : 'error', feedback.type === 'warning' ? '!' : undefined);
+  await chrome.scripting.executeScript({ target: { tabId, frameIds: [frameId] }, func: showPageFeedback, args: [feedback.message, feedback.type, t('selectionClose')] }).catch(() => undefined);
+}
+
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   const mode = MENU_MODES[String(info.menuItemId)];
   if (!mode || !tab?.id) return;
   try {
-    await saveSelectionFromTab(tab.id, mode);
-    await flashBadge('success');
+    const feedback = await saveSelectionFromTab(tab.id, mode, info.frameId || 0);
+    await reportFeedback(tab.id, feedback, info.frameId || 0);
   } catch (err) {
-    console.error('[Clip2File] failed:', err);
-    await flashBadge('error');
+    await reportFeedback(tab.id, { message: saveErrorMessage(err), type: 'error' }, info.frameId || 0);
   }
 });
 
@@ -497,23 +468,16 @@ async function flashBadge(color: 'success' | 'error', text?: string): Promise<vo
 /** Keyboard shortcut handler. */
 chrome.commands.onCommand.addListener(async (command) => {
   if (command !== 'quick-save') return;
-  try {
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    if (!tab?.id) {
-      console.warn('[Clip2File] no active tab');
-      flashBadge('error');
-      return;
-    }
-
-    // Prefer page selection; fall back to clipboard if nothing is selected.
-    if (await hasSelection(tab.id)) {
-      await saveSelectionFromTab(tab.id);
-    } else {
-      await saveFromClipboard();
-    }
-    await flashBadge('success');
-  } catch (err) {
-    console.error('[Clip2File] quick-save failed:', err);
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (!tab?.id) {
     await flashBadge('error');
+    return;
+  }
+  try {
+    // Prefer page selection; fall back to clipboard if nothing is selected.
+    const feedback = await hasSelection(tab.id) ? await saveSelectionFromTab(tab.id) : await saveFromClipboard();
+    await reportFeedback(tab.id, feedback);
+  } catch (err) {
+    await reportFeedback(tab.id, { message: saveErrorMessage(err), type: 'error' });
   }
 });

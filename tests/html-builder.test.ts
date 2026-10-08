@@ -36,6 +36,13 @@ describe('buildHtml', () => {
     expect(html).toContain('&lt;script&gt;');
   });
 
+  it('treats HTML-looking clipboard text as inert content', async () => {
+    const html = await buildHtml('<div><script>bad()</script><img src=x onerror=bad()></div>', []);
+    expect(html).not.toContain('<script>');
+    expect(html).not.toContain('<img src=x');
+    expect(html).toContain('&lt;div&gt;');
+  });
+
   it('preserves code blocks in <pre> tags', async () => {
     const code = '    def hello():\n        print("hi")';
     const html = await buildHtml(code, []);

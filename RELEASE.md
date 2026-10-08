@@ -24,7 +24,7 @@ npm run build
 
 ```bash
 cd dist
-zip -r ../clip2file-v1.1.0.zip .
+zip -r ../clip2file-v1.2.0.zip .
 ```
 
 注意：`manifest.json` 必须在 zip 根目录。
@@ -37,7 +37,7 @@ zip -r ../clip2file-v1.1.0.zip .
 
 | 素材 | 要求 | 状态 | 路径 |
 |------|------|------|------|
-| 扩展包 zip | manifest 在根目录 | 构建后生成 | `clip2file-v1.1.0.zip` |
+| 扩展包 zip | manifest 在根目录 | 构建后生成 | `clip2file-v1.2.0.zip` |
 | 图标 128×128 | PNG | ✅ | `public/icons/icon128.png` |
 | 隐私政策 URL | 公开可访问 | ✅ | https://bk4ice.github.io/clip2file/ |
 
@@ -55,7 +55,7 @@ zip -r ../clip2file-v1.1.0.zip .
 
 1. Popup 保存网页文本为 `.txt`
 2. Popup 检测 Python 代码，文件名 `main.py`
-3. 网页选区右键 → Save as File with Clip2File
+3. 网页选区右键 → 智能保存或 Markdown（含图时生成资料 ZIP）
 4. Options 设置页 General / Privacy
 
 ---
@@ -65,11 +65,29 @@ zip -r ../clip2file-v1.1.0.zip .
 ### 4.1 基本信息
 
 - Name: Clip2File
-- Version: 1.1.0
+- Version: 1.2.0
 - Category: Productivity
 - Language: English / 中文（简体）
 
 ### 4.2 商店描述
+
+**1.2.0 更新说明（中文）：**
+
+- 网页选区 HTML 保留标题、列表、链接、表格和图文顺序；图片内嵌，适合离线阅读。
+- Markdown 无图片导出 `.md`，含图片导出资料 ZIP（`content.md` + 相对路径 `assets/`）。
+- 图片无法保存时在原位置标记，网页内显示可关闭的部分完成提示。
+- 合并单元格/不规则表格在 Markdown 中保留为安全 HTML，并提示编辑器兼容性限制。
+- 加入资源大小/超时限制及 MV3 图片 ZIP 兼容性修复。不新增权限、不上传用户内容。
+
+**What's new in 1.2.0 (English):**
+
+- Selected HTML preserves headings, lists, links, tables, and image order with offline embedded images.
+- Markdown exports `.md` without images or a ZIP containing `content.md` and relative `assets/` files with images.
+- Missing images keep placeholders and a dismissible partial-result warning on the page.
+- Merged/irregular tables remain safe HTML in Markdown with an editor-compatibility warning.
+- Bounded image loading and MV3 binary ZIP fixes; no new permissions or content uploads.
+
+**发布前验收：**加载 `dist/`，手动点击原生右键菜单和按系统 Alt+S；验证英文/中文、普通段落、图文混排、合并表格、缺图提示与受限页面。使用现有商店条目上传新包，不创建新条目。
 
 **English:**
 
@@ -94,6 +112,8 @@ zip -r ../clip2file-v1.1.0.zip .
 > - 🎨 **Native feel**: clean Apple-style UI with light/dark mode
 >
 > No more dragging text to the desktop and renaming files by hand. Copy → save → done.
+>
+> If Clip2File saves you time, a quick rating on this page helps more people find it — and feature ideas or bug reports are always welcome on GitHub.
 
 **中文：**
 
@@ -118,6 +138,8 @@ zip -r ../clip2file-v1.1.0.zip .
 > - 🎨 **原生体验**：简洁界面，支持浅色 / 深色模式
 >
 > 告别手动拖拽、重命名文件。复制 → 保存 → 完成。
+>
+> 如果 Clip2File 帮到了你，在本页留下一个评分可以让更多人发现它；也欢迎在 GitHub 上反馈问题或提出功能建议。
 
 ### 4.3 单一用途
 
@@ -145,7 +167,7 @@ zip -r ../clip2file-v1.1.0.zip .
 ## 五、提交
 
 1. 登录 [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole)
-2. Add new item，上传 zip
+2. 打开现有 Clip2File 条目，在 Package 页面上传新版本 zip；仅首次上架才使用 Add new item
 3. 填写商店信息、截图、隐私政策 URL
 4. 处理红色必填项
 5. Submit for review
@@ -172,7 +194,7 @@ zip -r ../clip2file-v1.1.0.zip .
 
 - [ ] 开发者账号已注册并支付 $5
 - [ ] `dist/` 已生成
-- [ ] `clip2file-v1.1.0.zip` 已打包
+- [ ] `clip2file-v1.2.0.zip` 已打包
 - [ ] `manifest.json` 在 zip 根目录
 - [ ] `public/icons/icon128.png` 存在
 - [ ] 隐私政策页面 https://bk4ice.github.io/clip2file/ 可访问

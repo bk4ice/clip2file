@@ -70,7 +70,7 @@ async function loadShortcuts(): Promise<void> {
 function loadMeta(): void {
   try {
     const manifest = chrome.runtime.getManifest();
-    const version = manifest.version || '1.1.0';
+    const version = manifest.version || '1.2.0';
     versionBadge.textContent = t('optionsVersion', version);
     aboutVersion.textContent = version;
   } catch {

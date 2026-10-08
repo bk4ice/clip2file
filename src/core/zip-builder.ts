@@ -41,7 +41,7 @@ export async function buildZip(files: ParsedFile[]): Promise<ZipBuildResult> {
     }
     // Binary files (images): add as Blob; text files: add as string.
     if (f.blob) {
-      zip.file(f.path, f.blob);
+      zip.file(f.path, new Uint8Array(await f.blob.arrayBuffer()));
     } else {
       zip.file(f.path, f.content);
     }

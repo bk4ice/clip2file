@@ -7,6 +7,24 @@ export interface DetectResult {
   content: string;
 }
 
+export type SelectionNode =
+  | { kind: 'text'; text: string }
+  | { kind: 'image'; id: string; alt: string }
+  | { kind: 'element'; tag: string; children: SelectionNode[]; href?: string; start?: number; colspan?: number; rowspan?: number };
+
+export interface SelectionContent {
+  nodes: SelectionNode[];
+  text: string;
+  imageSources: { id: string; url: string }[];
+  rich: boolean;
+}
+
+export interface SelectionAsset {
+  id: string;
+  file?: ParsedFile;
+  error?: string;
+}
+
 export interface LanguageRule {
   name: string;
   extension: string;

@@ -27,7 +27,7 @@ function textToHtml(text: string): string {
 
   // If the text already looks like HTML, keep it as-is.
   if (/^\s*<(html|body|div|p|h[1-6]|ul|ol|table|pre)\b/i.test(trimmed)) {
-    return trimmed;
+    return `<pre><code>${escapeHtml(trimmed)}</code></pre>`;
   }
 
   // Split into blocks separated by blank lines.
